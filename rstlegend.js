@@ -1,7 +1,7 @@
 /**
  * @license
  * Copyright 2018 Lingyu Zhou (zhouly@bu.edu, zhoulytwin@gmail.com)
- * MIT-licensed (http://opensource.org/licenses/MIT)
+ * GNU Lesser General Public License v3.0
  */
 
 /*global Dygraph:false */
