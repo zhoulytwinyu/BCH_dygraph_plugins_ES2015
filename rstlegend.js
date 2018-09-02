@@ -52,8 +52,6 @@ Dygraph.Plugins.RSTLegend = (function() {
   "HFJV":"label-custom-danger",
   "ECMO":"label-custom-critical"
   };
-  rstlegend.timeStamp = "Event_End_Dt_Tm";
-
   
   rstlegend.prototype.toString = function() {
     return "RST Legend Plugin";
@@ -84,7 +82,7 @@ Dygraph.Plugins.RSTLegend = (function() {
 
     // Fill data
     RST_title.innerHTML = rst;
-    RST_timeStamp.innerHTML = moment.unix(this.data_[idx]["Event_End_Dt_Tm"]).format("MM/DD/YYYY HH:MM");
+    RST_timeStamp.innerHTML = moment.unix(this.data_[idx]["time"]).format("MM/DD/YYYY HH:MM");
     // RSV Scores
     let self=this;
     rstlegend.RSVToDisplay[rst].forEach(function(rsv){
