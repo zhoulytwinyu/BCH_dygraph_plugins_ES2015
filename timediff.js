@@ -23,8 +23,10 @@ Dygraph.Plugins.Timediff = (function() {
     // Create other variables
     this.g = null;
     this.canvas_=document.createElement("canvas");
-    this.dynamic_canvas_ = document.createElement("canvas");
+    this.canvas_position_=null;
     this.picking_canvas_=document.createElement("canvas");
+    this.dynamic_canvas_ = document.createElement("canvas");
+    this.dynamic_canvas_position_=null;
     this.selected_event_idx_ = null;
     this.selected_data_time_ = null;
   };
@@ -37,15 +39,22 @@ Dygraph.Plugins.Timediff = (function() {
     return "Timediff Plugin";
   };
 
+  timediff.prototype.layout = function(e){
+    let position = e.reserveSpaceTop(12);
+    this.dynamic_canvas_position_=position;
+  };
+
   timediff.prototype.click = function(e) {
     let g=e.dygraph;
     let ctxDraw = this.canvas_.getContext("2d");
     let ctxPicking = this.picking_canvas_.getContext("2d");
     let ctxDynamic = this.dynamic_canvas_.getContext("2d");
     let x = e.canvasx;
+    let offsetx = this.canvas_position_.x;
     let y = e.canvasy;
+    let offsety = this.canvas_position_.y;
     
-    let pixel_color = ctxPicking.getImageData(x,y,1,1).data;
+    let pixel_color = ctxPicking.getImageData(x-offsetx,y-offsety,1,1).data;
     let eventIdx = this.ColorToId(pixel_color);
 
     if (eventIdx===this.selected_event_idx_) {
@@ -84,15 +93,24 @@ Dygraph.Plugins.Timediff = (function() {
   
   timediff.prototype.didDrawChart = function(e) {
     let g=this.g;
-    let height = g.height_;
-    let width = g.width_;
+    let area = g.getArea();
+    this.canvas_position_ = area;
+    this.dynamic_canvas_position_.w = area.w;
+    this.dynamic_canvas_position_.x = area.x;
+    console.log(area);
     // Resize canvases
-    this.canvas_.width = width;
-    this.canvas_.height = height;
-    this.dynamic_canvas_.width = width;
-    this.dynamic_canvas_.height = 10; // special height
-    this.picking_canvas_.width = width;
-    this.picking_canvas_.height = height;
+    this.canvas_.style.top = this.canvas_position_.y+"px";
+    this.canvas_.style.left = this.canvas_position_.x+"px";
+    this.canvas_.width = this.canvas_position_.w;
+    this.canvas_.height = this.canvas_position_.h;
+    this.picking_canvas_.style.top = this.canvas_position_.y+"px";
+    this.picking_canvas_.style.left = this.canvas_position_.x+"px";
+    this.picking_canvas_.width = this.canvas_position_.w;
+    this.picking_canvas_.height = this.canvas_position_.h;
+    this.dynamic_canvas_.style.top = this.dynamic_canvas_position_.y+"px";
+    this.dynamic_canvas_.style.left = this.dynamic_canvas_position_.x+"px";
+    this.dynamic_canvas_.width = this.dynamic_canvas_position_.w;
+    this.dynamic_canvas_.height = this.dynamic_canvas_position_.h;
     // Draw on canvases
     this.drawAllLabels();
     this.drawTimeDiff();
@@ -111,6 +129,7 @@ Dygraph.Plugins.Timediff = (function() {
     this.g=g;
     
     return {
+      layout: this.layout,
       click: this.click,
       select: this.select,
       deselect: this.deselect,
@@ -120,11 +139,25 @@ Dygraph.Plugins.Timediff = (function() {
   };
 
   timediff.prototype.destroy = function() {
+    this.data_ = null;
+    this.color_selected_ = null;
+    this.color_normal_ = null;
+    this.g = null;
+    this.canvas_= null;
+    this.dynamic_canvas_ = null;
+    this.picking_canvas_= null;
+    this.selected_event_idx_ = null;
+    this.selected_data_time_ = null;
   };
 
   /**
    * Helper functions
    */
+  timediff.prototype.toCanvasXCoord = function(date_obj,offsetx){
+    let g = this.g;
+    return g.toDomXCoord( date_obj ) - offsetx;
+  }
+  
   timediff.prototype.IdToColor = function(id){
     let r = Math.floor(id/65536);
     let g = Math.floor(id%65536/256);
@@ -158,7 +191,7 @@ Dygraph.Plugins.Timediff = (function() {
     ctx.lineTo(x, ymax);
     ctx.stroke();
     // Fill text
-    ctx.translate(x, 0);
+    ctx.translate(x, ymin);
     ctx.rotate(Math.PI/2);
     ctx.textAlign = "left";
     ctx.font= "8px sans-serif";
@@ -173,7 +206,7 @@ Dygraph.Plugins.Timediff = (function() {
     let color = this.IdToColor(id);
     // Fill text
     ctx.save();
-    ctx.translate(x, 0);
+    ctx.translate(x, ymin);
     ctx.rotate(Math.PI/2);
     ctx.textAlign = "left";
     ctx.font= "8px sans-serif";
@@ -183,45 +216,38 @@ Dygraph.Plugins.Timediff = (function() {
     ctx.restore();
   };
   
-  timediff.prototype.drawAllLabels = function (){
-    let g = this.g;
-    let area = g.getArea();
+  timediff.prototype.drawAllLabels = function (){ 
     let ctx = this.canvas_.getContext("2d");
     // Draw all labels
     for (let i=0; i<this.data_.length; i++) {
       let row = this.data_[i];
-      let x = g.toDomXCoord( new Date(1000*row["time"]) );
-      if (x<area.x){
-        continue;
-      }
+      let x = this.toCanvasXCoord( new Date(1000*row["time"]),
+                                   this.canvas_position_.x);
       let label = row["label"];
-      this.drawLabel(ctx, x, area.y, area.y+area.h, label, this.color_normal_ );
+      this.drawLabel(ctx, x, 0, this.canvas_.height, label, this.color_normal_ );
     }
     
     // Draw the selected label
     let selected_event_idx = this.selected_event_idx_;
     if (selected_event_idx!==null){
       let row = this.data_[selected_event_idx];
-      let x = g.toDomXCoord( new Date(1000*row["time"]) );
+      let x = this.toCanvasXCoord( new Date(1000*row["time"]),
+                                    this.canvas_position_.x);
       let label = row["label"];
-      this.drawLabel(ctx, x, area.y, area.y+area.h, label, this.color_selected_ );
+      this.drawLabel(ctx, x, 0, this.canvas_.height, label, this.color_selected_ );
     }
   }
   
   timediff.prototype.drawAllLabelsPicking = function (){
-    let g = this.g;
-    let area = g.getArea();
     let ctx = this.picking_canvas_.getContext("2d");
     ctx.imageSmoothingEnabled = false;
     // Draw all labels picking
     for (let i=0; i<this.data_.length; i++) {
       let row = this.data_[i];
-      let x = g.toDomXCoord( new Date(1000*row["time"]) );
-      if (x<area.x){
-        continue;
-      }
+      let x = this.toCanvasXCoord( new Date(1000*row["time"]),
+                                    this.canvas_position_.x);
       let label = row["label"];
-      this.drawLabelPicking(ctx, x, area.y, area.y+area.h, label, i);
+      this.drawLabelPicking(ctx, x, 0, this.picking_canvas_.height, label, i);
     }
   }
 
@@ -238,10 +264,12 @@ Dygraph.Plugins.Timediff = (function() {
     let timediffLabel = this.prettyInterval(selected_data_time - eventTime);
     // Draw
     let ctx = dynamic_canvas.getContext("2d");
-    ctx.font="8px sans-serif";
+    ctx.font="10px sans-serif";
     let timediffLabelWidth = ctx.measureText(timediffLabel).width;
-    let eventX = g.toDomXCoord(new Date(1000*eventTime) );
-    let dataX = g.toDomXCoord(new Date(1000*selected_data_time) );
+    let eventX = this.toCanvasXCoord( new Date(1000*eventTime),
+                                      this.dynamic_canvas_position_.x);
+    let dataX = this.toCanvasXCoord(new Date(1000*selected_data_time),
+                                    this.dynamic_canvas_position_.x);
     let color = this.color_selected_;
     ctx.strokeStyle=color;
     ctx.fillStyle=color;
@@ -287,23 +315,23 @@ Dygraph.Plugins.Timediff = (function() {
   timediff.prototype.drawArrow = function(ctx,x,y,direction){
     if (direction==="left"){
       ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.lineTo(x+3, y-4);
-      ctx.moveTo(x, y);
-      ctx.lineTo(x+3, y+4);
-      ctx.moveTo(x, y);
-      ctx.lineTo(x+7, y);
+      ctx.moveTo(x+1, y);
+      ctx.lineTo(x+4, y-4);
+      ctx.moveTo(x+1, y);
+      ctx.lineTo(x+4, y+4);
+      ctx.moveTo(x+1, y);
+      ctx.lineTo(x+8, y);
       ctx.stroke();
       return;
     }
     if (direction==="right"){
       ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.lineTo(x-3, y-4);
-      ctx.moveTo(x, y);
-      ctx.lineTo(x-3, y+4);
-      ctx.moveTo(x, y);
-      ctx.lineTo(x-7, y);
+      ctx.moveTo(x-1, y);
+      ctx.lineTo(x-4, y-4);
+      ctx.moveTo(x-1, y);
+      ctx.lineTo(x-4, y+4);
+      ctx.moveTo(x-1, y);
+      ctx.lineTo(x-8, y);
       ctx.stroke();
       return;
     }
