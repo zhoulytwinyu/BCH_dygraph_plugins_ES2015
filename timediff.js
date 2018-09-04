@@ -284,30 +284,30 @@ Dygraph.Plugins.Timediff = (function() {
     ctx.stroke();
     if (eventX-dataX > 0) {
       if (eventX-dataX >= 20) {
-        this.drawArrow(ctx,eventX,5,"right");
-        this.drawArrow(ctx,dataX,5,"left");
+        this.drawArrow(ctx,eventX,6,"right");
+        this.drawArrow(ctx,dataX,6,"left");
       }
       if (eventX - dataX >=20+timediffLabelWidth){
         ctx.textAlign="left";
-        ctx.fillText(timediffLabel, dataX+10, 5);
+        ctx.fillText(timediffLabel, dataX+10, 6);
       }
       else {
         ctx.textAlign="right";
-        ctx.fillText(timediffLabel, dataX-3, 5);
+        ctx.fillText(timediffLabel, dataX-3, 6);
       }
     }
     if (dataX-eventX >= 0) {
       if (dataX-eventX >= 20) {
-        this.drawArrow(ctx,eventX+12,5,"left");
+        this.drawArrow(ctx,eventX,5,"left");
         this.drawArrow(ctx,dataX,5,"right");
       }
-      if (dataX-eventX >=30+timediffLabelWidth){
+      if (dataX-eventX >=20+timediffLabelWidth){
         ctx.textAlign="right";
-        ctx.fillText(timediffLabel, dataX-10, 5);
+        ctx.fillText(timediffLabel, dataX-10, 6);
       }
       else {
         ctx.textAlign="left";
-        ctx.fillText(timediffLabel, dataX+10, 5);
+        ctx.fillText(timediffLabel, dataX+3, 6);
       }
     }
   };
