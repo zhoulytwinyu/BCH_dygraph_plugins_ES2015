@@ -30,14 +30,14 @@ Dygraph.Plugins.Devtemplate = (function() {
    */
   devtemplate.prototype.activate = function(g) {
     return {
-      //layout: function(e){console.log("layout");},
-      click: function(e){console.log([e.canvasx,e.canvasy]);}
+      layout: function(e){console.log({layout:e});},
+      click: function(e){console.log([e.canvasx,e.canvasy]);},
       //dblclick: function(e){console.log("dblclick");},
       //select: function(e){console.log("select");},
       //deselect: function(e){console.log("deselect");},
       //clearChart: function(e){console.log("clearChart");},
       //predraw: function(e){console.log("predraw");},
-      //didDrawChart: function(e){console.log("didDrawChart");}
+      didDrawChart: function(e){console.log({didDrawChart:e});}
     };
   };
   

@@ -16,7 +16,7 @@ Dygraph.Plugins.RSTLegend = (function() {
   var rstlegend = function(options) {
     console.log(options);
     this.div_ = document.querySelector(options.div || null);
-    this.data_ = options.data || null;
+    this.data_ = options.data || [];
   };
 
   /**

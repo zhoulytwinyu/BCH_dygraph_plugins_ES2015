@@ -15,9 +15,9 @@ Dygraph.Plugins.Timediff = (function() {
    * @constructor
    */
   var timediff = function(options) {
-    console.log(options);
+    console.log({timediff:options});
     // Copy over options
-    this.data_ = options.data;
+    this.data_ = options.data || [];
     this.color_selected_ = options.color_selected || this.boston_red;
     this.color_normal_ = options.color_normal || "black";
     // Create other variables
@@ -97,20 +97,25 @@ Dygraph.Plugins.Timediff = (function() {
     this.canvas_position_ = area;
     this.dynamic_canvas_position_.w = area.w;
     this.dynamic_canvas_position_.x = area.x;
-    console.log(area);
     // Resize canvases
     this.canvas_.style.top = this.canvas_position_.y+"px";
     this.canvas_.style.left = this.canvas_position_.x+"px";
-    this.canvas_.width = this.canvas_position_.w;
-    this.canvas_.height = this.canvas_position_.h;
+    this.canvas_.style.width = this.canvas_position_.w+"px";
+    this.canvas_.style.height = this.canvas_position_.h+"px";
+    this.canvas_.width = this.canvas_position_.w*window.devicePixelRatio;
+    this.canvas_.height = this.canvas_position_.h*window.devicePixelRatio;
     this.picking_canvas_.style.top = this.canvas_position_.y+"px";
     this.picking_canvas_.style.left = this.canvas_position_.x+"px";
-    this.picking_canvas_.width = this.canvas_position_.w;
-    this.picking_canvas_.height = this.canvas_position_.h;
+    this.picking_canvas_.style.width = this.canvas_position_.w+"px";
+    this.picking_canvas_.style.height = this.canvas_position_.h+"px";
+    this.picking_canvas_.width = this.canvas_position_.w*window.devicePixelRatio;
+    this.picking_canvas_.height = this.canvas_position_.h*window.devicePixelRatio;
     this.dynamic_canvas_.style.top = this.dynamic_canvas_position_.y+"px";
     this.dynamic_canvas_.style.left = this.dynamic_canvas_position_.x+"px";
-    this.dynamic_canvas_.width = this.dynamic_canvas_position_.w;
-    this.dynamic_canvas_.height = this.dynamic_canvas_position_.h;
+    this.dynamic_canvas_.style.width = this.dynamic_canvas_position_.w+"px";
+    this.dynamic_canvas_.style.height = this.dynamic_canvas_position_.h+"px";
+    this.dynamic_canvas_.width = this.dynamic_canvas_position_.w*window.devicePixelRatio;
+    this.dynamic_canvas_.height = this.dynamic_canvas_position_.h*window.devicePixelRatio;
     // Draw on canvases
     this.drawAllLabels();
     this.drawTimeDiff();
@@ -146,6 +151,8 @@ Dygraph.Plugins.Timediff = (function() {
     this.canvas_= null;
     this.dynamic_canvas_ = null;
     this.picking_canvas_= null;
+    this.canvas_position_=null;
+    this.dynamic_canvas_position_=null;
     this.selected_event_idx_ = null;
     this.selected_data_time_ = null;
   };
@@ -240,7 +247,6 @@ Dygraph.Plugins.Timediff = (function() {
   
   timediff.prototype.drawAllLabelsPicking = function (){
     let ctx = this.picking_canvas_.getContext("2d");
-    ctx.imageSmoothingEnabled = false;
     // Draw all labels picking
     for (let i=0; i<this.data_.length; i++) {
       let row = this.data_[i];

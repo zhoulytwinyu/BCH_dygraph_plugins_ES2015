@@ -8,3 +8,6 @@ Under construction.
 
 ## timediff
 ![timediff_screenshot](timediff.png)
+
+## locations (banner)
+![locations_screenshot](locations.png)
