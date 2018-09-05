@@ -12,23 +12,23 @@ Under construction.
 * R source: rstlegend.r
 * R function: dyRSTLegend
 * Arguments:
-  ** divid: id of a html container, e.g. `#rst_info` for `<div id="rst_info"> </div>`.
-  ** data: a R data.frame containing RSV columns, a "Score" column a "time" column.
-  ** Optional arguments: (TODO)
+  * divid: id of a html container, e.g. `#rst_info` for `<div id="rst_info"> </div>`.
+  * data: a R data.frame containing RSV columns, a "Score" column a "time" column.
+  * Optional arguments: (TODO)
 ![rstlegend_screenshot](rstlegend.png)
 
 ## timediff
 * R source: timediff.r
 * R function: dyTimediff
 * Arguments:
-  ** data: a R data.frame with columns: "label" and "time".
-  ** Optional arguments: (TODO)
+  * data: a R data.frame with columns: "label" and "time".
+  * Optional arguments: (TODO)
 ![timediff_screenshot](timediff.png)
 
 ## locations (banner)
 * R source: locations.r
 * R function: dyLocations
 * Arguments:
-  ** data: a R data.frame with columns: "label", "start" and "end".
-  ** Optional arguments: (TODO)
+  * data: a R data.frame with columns: "label", "start" and "end".
+  * Optional arguments: (TODO)
 ![locations_screenshot](locations.png)
