@@ -23,8 +23,8 @@ Dygraph.Plugins.Timediff = (function() {
     // Create other variables
     this.g = null;
     this.canvas_=document.createElement("canvas");
-    this.canvas_position_=null;
-    this.picking_canvas_=document.createElement("canvas");
+    this.canvas_position_ = null;
+    this.picking_canvas_ = document.createElement("canvas");
     this.dynamic_canvas_ = document.createElement("canvas");
     this.dynamic_canvas_position_=null;
     this.selected_event_idx_ = null;
@@ -54,7 +54,11 @@ Dygraph.Plugins.Timediff = (function() {
     let y = e.canvasy;
     let offsety = this.canvas_position_.y;
     
-    let pixel_color = ctxPicking.getImageData(x-offsetx,y-offsety,1,1).data;
+    let pixel_color = ctxPicking.getImageData((x-offsetx)*window.devicePixelRatio,
+                                              (y-offsety)*window.devicePixelRatio,
+                                              1,
+                                              1
+                                              ).data;
     let eventIdx = this.ColorToId(pixel_color);
 
     if (eventIdx===this.selected_event_idx_) {
