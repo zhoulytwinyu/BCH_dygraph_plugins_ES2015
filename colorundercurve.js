@@ -35,9 +35,10 @@ Dygraph.Plugins.ColorUnderCurve = (function() {
   colorundercurve.prototype.didDrawChart = function(e){
     let ctx = this.canvas_ctx_;
     let area = this.g.getArea();
-    for (let i=area.x; i<area.w+area.x; i++){
-      
-    }
+    console.log(area);
+    let baseliney = area.y+area.h-1;
+    let data=ctx.getImageData(area.x,baseliney,area.w,1);
+    console.log(data);
   };
   
   /**
@@ -61,6 +62,8 @@ Dygraph.Plugins.ColorUnderCurve = (function() {
   /**
    * Helper
    */
+  colorundercurve.prototype.floodLineFill = function(x){
+  }
   
   return colorundercurve;
 })();

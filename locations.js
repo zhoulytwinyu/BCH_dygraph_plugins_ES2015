@@ -120,8 +120,9 @@ Dygraph.Plugins.Locations = (function() {
         return;
       }
       else {
-        let start = self.data_[id]["start"];
-        let end = self.data_[id]["end"];
+        let row = self.data_[id];
+        let start = row["start"];
+        let end = row["end"]===null ? new Date() : new Date(1000*row["end"]);
         self.g.doZoomXDates_( new Date(start*1000),
                               new Date(end*1000)
                               );
@@ -183,7 +184,7 @@ Dygraph.Plugins.Locations = (function() {
     for (let i=0; i<this.data_.length; i++) {
       let row=this.data_[i];
       let start = this.toCanvasXCoord( new Date(1000*row["start"]) );
-      let end = this.toCanvasXCoord( new Date(1000*row["end"]) );
+      let end = this.toCanvasXCoord( row["end"]===null ? new Date() : new Date(1000*row["end"]) );
       let label = new Date(1000*row["label"]);
       ctx.fillStyle = this.color_mapping_.hasOwnProperty(label) ?
                       this.color_mapping_[label] :
@@ -197,7 +198,7 @@ Dygraph.Plugins.Locations = (function() {
     for (let i=0; i<this.data_.length; i++) {
       let row=this.data_[i];
       let start = this.toCanvasXCoord( new Date(1000*row["start"]) );
-      let end = this.toCanvasXCoord( new Date(1000*row["end"]) );
+      let end = this.toCanvasXCoord( row["end"]===null ? new Date() : new Date(1000*row["end"]) );
       let label = new Date(1000*row["label"]);
       ctx.fillStyle = this.IdToColor(i);
       ctx.fillRect(start,1,end-start,20);
