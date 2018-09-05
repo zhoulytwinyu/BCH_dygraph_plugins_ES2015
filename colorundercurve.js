@@ -37,8 +37,8 @@ Dygraph.Plugins.ColorUnderCurve = (function() {
     let area = this.g.getArea();
     console.log(area);
     let baseliney = area.y+area.h-1;
-    let data=ctx.getImageData(area.x,baseliney,area.w,1);
-    console.log(data);
+    let data=ctx.getImageData(area.x+1,baseliney,area.w,1);
+
   };
   
   /**

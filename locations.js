@@ -185,7 +185,7 @@ Dygraph.Plugins.Locations = (function() {
       let row=this.data_[i];
       let start = this.toCanvasXCoord( new Date(1000*row["start"]) );
       let end = this.toCanvasXCoord( row["end"]===null ? new Date() : new Date(1000*row["end"]) );
-      let label = new Date(1000*row["label"]);
+      let label = row["label"];
       ctx.fillStyle = this.color_mapping_.hasOwnProperty(label) ?
                       this.color_mapping_[label] :
                       this.color_default_;

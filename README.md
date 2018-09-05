@@ -30,5 +30,5 @@ Under construction.
 * R function: dyLocations
 * Arguments:
   * data: a R data.frame with columns: "label", "start" and "end".
-  * Optional arguments: (TODO)
+  * color_mapping: R list e.g. list(ward1 = 'red')
 ![locations_screenshot](locations.png)
