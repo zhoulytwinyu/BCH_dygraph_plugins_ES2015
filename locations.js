@@ -9,9 +9,6 @@ Dygraph.Plugins.Locations = (function() {
   "use strict";
 
   /**
-   * Creates interactive events in the graphs and shows time diff
-   * between the hover point to the selected event.
-   *
    * @constructor
    */
   var locations = function(options) {
@@ -57,12 +54,15 @@ Dygraph.Plugins.Locations = (function() {
   };
 
   locations.prototype.select = function(e) {
+    let g = this.g;
     let unix_sec = e.selectedX/1000;
+    let scale_x = g.canvas_.width/g.width_;
+    let scale_y = g.canvas_.height/g.height_;
     let domXCoord = e.selectedPoints[0].canvasx;
     this.floater_.style.left = domXCoord+"px";
     let canvasXCoord = domXCoord - this.canvas_position_.x;
     let ctxPicking = this.picking_canvas_.getContext("2d");
-    let id = this.ColorToId( ctxPicking.getImageData(canvasXCoord,11,1,1).data );
+    let id = this.ColorToId( ctxPicking.getImageData(canvasXCoord*scale_x,11*scale_y,1,1).data );
     if (id===null){
       this.floater_.innerHTML = "Location unknown.";
     }
@@ -88,22 +88,26 @@ Dygraph.Plugins.Locations = (function() {
     let area = g.getArea();
     this.canvas_position_.x=area.x;
     this.canvas_position_.w=area.w;
+    let scale_x = g.canvas_.width/g.width_;
+    let scale_y = g.canvas_.height/g.height_;
     // Resize canvas
     this.canvas_.style.left = this.canvas_position_.x+"px";
     this.canvas_.style.top = this.canvas_position_.y+"px";
     this.canvas_.style.width = this.canvas_position_.w+"px";
     this.canvas_.style.height = this.canvas_position_.h+"px";
-    this.canvas_.width = this.canvas_position_.w*window.devicePixelRatio;
-    this.canvas_.height = this.canvas_position_.h*window.devicePixelRatio;
+    this.canvas_.width = this.canvas_position_.w*scale_x;
+    this.canvas_.height = this.canvas_position_.h*scale_y;
     var ctx = this.canvas_.getContext("2d");
+    ctx.scale(scale_x,scale_y);
     ctx.fillStyle=this.color_bg_;
     ctx.fillRect(0, 0, this.canvas_.width, this.canvas_.height);
     this.picking_canvas_.style.left = this.canvas_position_.x+"px";
     this.picking_canvas_.style.top = this.canvas_position_.y+"px";
     this.picking_canvas_.style.width = this.canvas_position_.w+"px";
     this.picking_canvas_.style.height = this.canvas_position_.h+"px";
-    this.picking_canvas_.width = this.canvas_position_.w*window.devicePixelRatio;
-    this.picking_canvas_.height = this.canvas_position_.h*window.devicePixelRatio;
+    this.picking_canvas_.width = this.canvas_position_.w*scale_x;
+    this.picking_canvas_.height = this.canvas_position_.h*scale_y;
+    this.picking_canvas_.getContext("2d").scale(scale_x,scale_y);
     this.drawAllIntervals();
     this.drawAllIntervalsPicking();
   };
@@ -116,15 +120,16 @@ Dygraph.Plugins.Locations = (function() {
       let pick_color = self.picking_canvas_.getContext("2d").
                            getImageData(x,y,1,1).data;
       let id = self.ColorToId(pick_color);
+      console.log([x,y,id]);
       if (id === null){
         return;
       }
       else {
         let row = self.data_[id];
-        let start = row["start"];
+        let start = new Date(row["start"]*1000);
         let end = row["end"]===null ? new Date() : new Date(1000*row["end"]);
-        self.g.doZoomXDates_( new Date(start*1000),
-                              new Date(end*1000)
+        self.g.doZoomXDates_( start,
+                              end
                               );
       }
     });

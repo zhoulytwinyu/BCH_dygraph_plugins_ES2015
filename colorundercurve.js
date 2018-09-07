@@ -33,19 +33,14 @@ Dygraph.Plugins.ColorUnderCurve = (function() {
   };
 
   colorundercurve.prototype.click = function(e){
-    console.log(e);
-    console.log([e.canvasx,e.canvasy]);
   };
   
   colorundercurve.prototype.dblclick = function(e){
-    console.log({dblclick:[e.canvasx,e.canvasy]});
   };
   
   colorundercurve.prototype.didDrawChart = function(e){
     let g=this.g;
     let area = this.g.getArea();
-    console.log(area);
-    console.log({gh:g.height_,gw:g.width_,cw:this.g.hidden_.width,ch:this.g.hidden_.height});
     let ctx = this.g.hidden_ctx_;
     this.drawAreaBorder();
     this.data_.forEach(row =>
@@ -87,7 +82,6 @@ Dygraph.Plugins.ColorUnderCurve = (function() {
   
   colorundercurve.prototype.recolor = function(start_sec,end_sec, color){
     let g = this.g;
-    console.log(g);
     let canvas = g.hidden_;
     let ctx = g.hidden_ctx_;
     let scale_x = canvas.width/g.width_;
@@ -109,15 +103,14 @@ Dygraph.Plugins.ColorUnderCurve = (function() {
                                     );
     let rgba = this.colorToRGBA(color);
     for (let i=0, stop=img_data.data.length/4; i<stop; i++){
-      let alpha = img_data.data[i*4+3]/255;
-      if (alpha===0){
+      if (img_data.data[i*4+3]===0){
         continue;
       }
+      let alpha = img_data.data[i*4+3]/255;
       img_data.data[i*4] = rgba[0] * alpha;
       img_data.data[i*4+1] = rgba[1] * alpha;
       img_data.data[i*4+2] = rgba[2] * alpha;
     }
-    ctx.fillRect(start, area.y,end-start+1,10);
     ctx.putImageData(img_data, start*scale_x, area.y*scale_y,);
   };
 

@@ -32,6 +32,20 @@ Dygraph.Plugins.Timediff = (function() {
   };
   timediff.prototype.boston_red = "#F6323E";
 
+  timediff.prototype.destroy = function() {
+    this.data_ = null;
+    this.color_selected_ = null;
+    this.color_normal_ = null;
+    this.g = null;
+    this.canvas_= null;
+    this.dynamic_canvas_ = null;
+    this.picking_canvas_= null;
+    this.canvas_position_=null;
+    this.dynamic_canvas_position_=null;
+    this.selected_event_idx_ = null;
+    this.selected_data_time_ = null;
+  };
+
   /**
    * Methods
    */
@@ -51,11 +65,13 @@ Dygraph.Plugins.Timediff = (function() {
     let ctxDynamic = this.dynamic_canvas_.getContext("2d");
     let x = e.canvasx;
     let offsetx = this.canvas_position_.x;
+    let scale_x = g.canvas_.width/g.width_;
     let y = e.canvasy;
     let offsety = this.canvas_position_.y;
+    let scale_y = g.canvas_.height/g.height_;
     
-    let pixel_color = ctxPicking.getImageData((x-offsetx)*window.devicePixelRatio,
-                                              (y-offsety)*window.devicePixelRatio,
+    let pixel_color = ctxPicking.getImageData((x-offsetx)*scale_x,
+                                              (y-offsety)*scale_y,
                                               1,
                                               1
                                               ).data;
@@ -101,25 +117,30 @@ Dygraph.Plugins.Timediff = (function() {
     this.canvas_position_ = area;
     this.dynamic_canvas_position_.w = area.w;
     this.dynamic_canvas_position_.x = area.x;
+    let scale_x = g.canvas_.width/g.width_;
+    let scale_y = g.canvas_.height/g.height_;
     // Resize canvases
     this.canvas_.style.top = this.canvas_position_.y+"px";
     this.canvas_.style.left = this.canvas_position_.x+"px";
     this.canvas_.style.width = this.canvas_position_.w+"px";
     this.canvas_.style.height = this.canvas_position_.h+"px";
-    this.canvas_.width = this.canvas_position_.w*window.devicePixelRatio;
-    this.canvas_.height = this.canvas_position_.h*window.devicePixelRatio;
+    this.canvas_.width = this.canvas_position_.w*scale_x;
+    this.canvas_.height = this.canvas_position_.h*scale_y;
+    this.canvas_.getContext("2d").scale(scale_x,scale_y);
     this.picking_canvas_.style.top = this.canvas_position_.y+"px";
     this.picking_canvas_.style.left = this.canvas_position_.x+"px";
     this.picking_canvas_.style.width = this.canvas_position_.w+"px";
     this.picking_canvas_.style.height = this.canvas_position_.h+"px";
-    this.picking_canvas_.width = this.canvas_position_.w*window.devicePixelRatio;
-    this.picking_canvas_.height = this.canvas_position_.h*window.devicePixelRatio;
+    this.picking_canvas_.width = this.canvas_position_.w*scale_x;
+    this.picking_canvas_.height = this.canvas_position_.h*scale_y;
+    this.picking_canvas_.getContext("2d").scale(scale_x,scale_y);
     this.dynamic_canvas_.style.top = this.dynamic_canvas_position_.y+"px";
     this.dynamic_canvas_.style.left = this.dynamic_canvas_position_.x+"px";
     this.dynamic_canvas_.style.width = this.dynamic_canvas_position_.w+"px";
     this.dynamic_canvas_.style.height = this.dynamic_canvas_position_.h+"px";
-    this.dynamic_canvas_.width = this.dynamic_canvas_position_.w*window.devicePixelRatio;
-    this.dynamic_canvas_.height = this.dynamic_canvas_position_.h*window.devicePixelRatio;
+    this.dynamic_canvas_.width = this.dynamic_canvas_position_.w*scale_x;
+    this.dynamic_canvas_.height = this.dynamic_canvas_position_.h*scale_y;
+    this.dynamic_canvas_.getContext("2d").scale(scale_x,scale_y);
     // Draw on canvases
     this.drawAllLabels();
     this.drawTimeDiff();
@@ -145,20 +166,6 @@ Dygraph.Plugins.Timediff = (function() {
       clearChart: this.clearChart,
       didDrawChart: this.didDrawChart,
     };
-  };
-
-  timediff.prototype.destroy = function() {
-    this.data_ = null;
-    this.color_selected_ = null;
-    this.color_normal_ = null;
-    this.g = null;
-    this.canvas_= null;
-    this.dynamic_canvas_ = null;
-    this.picking_canvas_= null;
-    this.canvas_position_=null;
-    this.dynamic_canvas_position_=null;
-    this.selected_event_idx_ = null;
-    this.selected_data_time_ = null;
   };
 
   /**
@@ -193,6 +200,7 @@ Dygraph.Plugins.Timediff = (function() {
   timediff.prototype.drawLabel=function (ctx, x, ymin, ymax, label, color){
     let label_offsetX = 3;
     let label_offsetY = -3;
+    x = Math.floor(x)+0.5;
     // Line stroke
     ctx.save();
     ctx.beginPath();
@@ -235,7 +243,7 @@ Dygraph.Plugins.Timediff = (function() {
       let x = this.toCanvasXCoord( new Date(1000*row["time"]),
                                    this.canvas_position_.x);
       let label = row["label"];
-      this.drawLabel(ctx, x, 0, this.canvas_.height, label, this.color_normal_ );
+      this.drawLabel(ctx, x, 0, this.g.height_, label, this.color_normal_ );
     }
     
     // Draw the selected label
@@ -245,7 +253,7 @@ Dygraph.Plugins.Timediff = (function() {
       let x = this.toCanvasXCoord( new Date(1000*row["time"]),
                                     this.canvas_position_.x);
       let label = row["label"];
-      this.drawLabel(ctx, x, 0, this.canvas_.height, label, this.color_selected_ );
+      this.drawLabel(ctx, x, 0, this.g.height_, label, this.color_selected_ );
     }
   }
   
