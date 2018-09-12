@@ -15,6 +15,7 @@ Dygraph.Plugins.Unzoom = (function() {
    * @constructor
    */
   var unzoom = function(options) {
+    console.log({unzoom:options});
     // Get options
     this.divId_ = options.divId;
     // Other variables

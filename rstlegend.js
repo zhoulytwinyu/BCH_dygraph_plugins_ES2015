@@ -14,7 +14,7 @@ Dygraph.Plugins.RSTLegend = (function() {
    * @constructor
    */
   var rstlegend = function(options) {
-    console.log(options);
+    console.log({rstlegend:options});
     this.div_ = document.querySelector(options.div || null);
     this.data_ = options.data || [];
   };

@@ -9,29 +9,40 @@ Dygraph.Plugins.Ylimits = (function() {
   "use strict";
 
   /**
+   * Plot horizontal limits with label sitting on upper right of the
+   * line using dygraph's hidden_ctx_.
+   * Options: color, data.
+   * - data format: [{'y','label'} ...]
    * @constructor
    */
   var ylimits = function(options) {
     console.log({ylimits:options});
     // Get options
-    this.color_ = "rgba(0,0,0,0.4)";
     this.data_ = options.data || [];
+    this.color_ = options.color || "rgba(0,0,0,0.3)";
     // Other variables
-    this.ctx_ = null;
     this.g = null;
   };
 
+  /**
+   * Reset all variables
+   */
   ylimits.prototype.destroy = function (){
-    // TODO
+    this.data_ = null;
+    this.color_ = null;
+    this.g = null;
   };
 
   /**
-   * Methods
+   * For debug
    */
   ylimits.prototype.toString = function() {
     return "Ylimits Plugin";
   };
 
+  /**
+   * Redraw limits on graph redraw.
+   */
   ylimits.prototype.didDrawChart = function(e){
     this.drawAllLimits();
   };
@@ -42,12 +53,15 @@ Dygraph.Plugins.Ylimits = (function() {
    */
   ylimits.prototype.activate = function(g) {
     this.g = g;
-    this.ctx_ = g.hidden_ctx_;
     return {
       didDrawChart: this.didDrawChart
     };
   };
 
+  /**
+   * Draw all horizontal limits and then add the label to upper right,
+   * if the space allows.
+   */
   ylimits.prototype.drawAllLimits = function(){
     if (this.data_.length===0){
       return;

@@ -32,3 +32,16 @@ Under construction.
   * data: a R data.frame with columns: "label", "start" and "end".
   * color_mapping: R list e.g. list(ward1 = 'red')
 ![locations_screenshot](locations.png)
+
+## ylimits
+* R source: ylimits.r
+* R function: dyYLimits
+* Arguments:
+  * data: a R data.frame with columns: "y" and "label"
+
+## colorundercurve
+* R source: colorundercurve.r
+* R function: dyColorUnderCurve
+* Arguments:
+  * data: a R data.frame with columns: "start", "end" and "color"
+  "start", "end" need to be a number indicating seconds since Unix epoch.
