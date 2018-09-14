@@ -120,10 +120,11 @@ r8O2bSaldPwTxrIs+3/aQ0NLEWC+jQAAAABJRU5ErkJggg==
   unzoom.prototype.activate = function(g) {
     this.g=g;
     let div = document.getElementById(this.divId_);
-    if (div !== null) {
-      div.appendChild(this.button_);
-      this.activateCustomEventHandler();
+    if (div === null) {
+      return null;
     }
+    div.appendChild(this.button_);
+    this.activateCustomEventHandler();
     return {
       didDrawChart: this.didDrawChart
     };

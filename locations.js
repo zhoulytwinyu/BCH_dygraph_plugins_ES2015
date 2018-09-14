@@ -191,7 +191,7 @@ Dygraph.Plugins.Locations = (function() {
     for (let i=0; i<this.data_.length; i++) {
       let row=this.data_[i];
       let start = this.toCanvasXCoord( new Date(1000*row["start"]) );
-      let end = this.toCanvasXCoord( row["end"]===null ? new Date() : new Date(1000*row["end"]) );
+      let end = this.toCanvasXCoord( row["end"] ? new Date(1000*row["end"]) : new Date());
       let label = row["label"];
       ctx.fillStyle = this.color_mapping_.hasOwnProperty(label) ?
                       this.color_mapping_[label] :
@@ -205,7 +205,7 @@ Dygraph.Plugins.Locations = (function() {
     for (let i=0; i<this.data_.length; i++) {
       let row=this.data_[i];
       let start = this.toCanvasXCoord( new Date(1000*row["start"]) );
-      let end = this.toCanvasXCoord( row["end"]===null ? new Date() : new Date(1000*row["end"]) );
+      let end = this.toCanvasXCoord( row["end"] ? new Date(1000*row["end"]) : new Date());
       let label = new Date(1000*row["label"]);
       ctx.fillStyle = this.IdToColor(i);
       ctx.fillRect(start,1,end-start,20);

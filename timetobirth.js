@@ -100,13 +100,11 @@ attCiJZz1Ly8Bs55FcCdHGEYUiGE8k2YIAjC/wC1S95Q3B+2+gAAAABJRU5ErkJggg==
   timetobirth.prototype.select = function (e) {
     var age = this.prettyInterval(e.selectedX/1000-this.birth_);
     this.div_.innerHTML = this.format(age);
-    if (this.show_){
-      this.div_.style.display="block";
-    }
+    this.div_.style.display="block";
   }
   
   /**
-   * Clear age label when new data point is selected
+   * Clear age label when new data point is deselected
    */
   timetobirth.prototype.deselect = function (e) {
     this.div_.innerHTML="";

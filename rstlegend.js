@@ -183,9 +183,7 @@ teE/gU0BOk2g09gUoNMEOo1NATpNoNMQUkqDlFVh69/npZTXNjfn5uaY7/tzWRtWTdkUrbWSUmaO
     });
     // Write to div
     this.div_.innerHTML=content;
-    if (this.show_){
-      this.div_.style.display="block";
-    }
+    this.div_.style.display="block";
   };
   
   rstlegend.prototype.deselect = function(e) {
