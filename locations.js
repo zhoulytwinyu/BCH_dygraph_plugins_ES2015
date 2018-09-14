@@ -9,6 +9,8 @@ Dygraph.Plugins.Locations = (function() {
   "use strict";
 
   /**
+   * Adds a location bar to the top of the graph and show data point
+   * location in a given div.
    * @constructor
    */
   var locations = function(options) {
