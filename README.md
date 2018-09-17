@@ -37,7 +37,7 @@ Under construction.
 * R source: ylimits.r
 * R function: dyYLimits
 * Arguments:
-  * data: a R data.frame with columns: "y" and "label"
+  * data: a R data.frame with columns: "LB", "UB" and "label"
 
 ## colorundercurve
 * R source: colorundercurve.r

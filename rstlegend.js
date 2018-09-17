@@ -81,7 +81,6 @@ teE/gU0BOk2g09gUoNMEOo1NATpNoNMQUkqDlFVh69/npZTXNjfn5uaY7/tzWRtWTdkUrbWSUmaO
     this.div_ = null;
   };
 
-
   /**
    * Class variables
    */
@@ -93,8 +92,8 @@ teE/gU0BOk2g09gUoNMEOo1NATpNoNMQUkqDlFVh69/npZTXNjfn5uaY7/tzWRtWTdkUrbWSUmaO
     "HFNC":["HFNC_Flow","FiO2","iNO_Set"],
     "CPAP":["CPAP_PEEP_comb","FiO2"],
     "BIPAP":["BIPAP_IPAP","BIPAP_EPAP","BIPAP_Rate","FiO2"],
-    "PSV":["PEEP","PS","FiO2","iNO_Set"],
-    "PCV":["VT_set","PIP_comb","PEEP","PS","VR","FiO2","iNO_Set"],
+    "PSV":["PEEP","PS","FiO2","iNO_Set","duration"],
+    "PCV":["VT_set","PIP_comb","PEEP","PS","VR","FiO2","iNO_Set","duration"],
     "VCV":["VT_set","PEEP","PS","VR","FiO2","iNO_Set"],
     "HFOV":["HFOV_MPAW","HFOV_Amplitude","HFOV_Frequency","FiO2","iNO_Set"],
     "HFJV":["FiO2","HFJV_PEEP","HFJV_PIP","HFJV_Rate","iNO_Set"],
@@ -102,27 +101,28 @@ teE/gU0BOk2g09gUoNMEOo1NATpNoNMQUkqDlFVh69/npZTXNjfn5uaY7/tzWRtWTdkUrbWSUmaO
   };
 
   rstlegend.prototype.RSVDisplayFormat = {
-    FiO2: (x) => x ? `<p style="margin:0px"> <b>FiO2</b> <span class="pull-right">${x}</span> </p>` : "",
-    NC_Flow: (x) => x ? `<p style="margin:0px"> <b>&#8203;</b> <span class="pull-right">${x} LPM</span> </p>` : "",
-    HFNC_Flow: (x) => x ? `<p style="margin:0px"> <b>&#8203;</b> <span class="pull-right">${x} LPM</span> </p>` : "",
-    CPAP_PEEP_comb: (x) => x ? `<p style="margin:0px"> <b>CPAP</b> <span class="pull-right">${x}</span> </p>` : "",
-    BIPAP_EPAP: (x) => x ? `<p style="margin:0px"> <b>CPAP</b> <span class="pull-right">${x}</span> </p>` : "",
-    BIPAP_IPAP: (x) => x ? `<p style="margin:0px"> <b>IPAP</b> <span class="pull-right">${x}</span> </p>` : "",
-    BIPAP_Rate: (x) => x ? `<p style="margin:0px"> <b>Rate</b> <span class="pull-right">${x}</span> </p>` : "",
-    PEEP: (x) => x ? `<p style="margin:0px"> <b>PEEP</b> <span class="pull-right">${x}</span> </p>` : "",
-    PIP_comb: (x) => x ? `<p style="margin:0px"> <b>PIP</b> <span class="pull-right">${x}</span> </p>` : "",
-    PS: (x) => x ? `<p style="margin:0px"> <b>PS</b> <span class="pull-right">${x}</span> </p>` : "",
-    VR: (x) => x ? `<p style="margin:0px"> <b>Rate</b> <span class="pull-right">${x}</span> </p>` : "",
-    VT_set: (x) => x ? `<p style="margin:0px"> <b>Tv</b> <span class="pull-right">${x} mL/kg</span> </p>` : "",
-    HFJV_PEEP: (x) => x ? `<p style="margin:0px"> <b>HFJV PEEP</b> <span class="pull-right">${x}</span> </p>` : "",
-    HFJV_PIP: (x) => x ? `<p style="margin:0px"> <b>HFJV PIP</b> <span class="pull-right">${x}</span> </p>` : "",
-    HFJV_Rate: (x) => x ? `<p style="margin:0px"> <b>HFJV Rate</b> <span class="pull-right">${x}</span> </p>` : "",
-    HFOV_Amplitude: (x) => x ? `<p style="margin:0px"> <b>Amplitude</b> <span class="pull-right">${x}</span> </p>` : "",
-    HFOV_Frequency: (x) => x ? `<p style="margin:0px"> <b>Frequency</b> <span class="pull-right">${x} Hz</span> </p>` : "",
-    HFOV_MPAW: (x) => x ? `<p style="margin:0px"> <b>MAP</b> <span class="pull-right">${x}</span> </p>` : "",
-    ECMO_Flow: (x) => x ? `<p style="margin:0px"> <b>ECMO Flow</b> <span class="pull-right">${x}</span> </p>` : "",
-    MASK_Flow: (x) => x ? `<p style="margin:0px"> <b>&#8203;</b> <span class="pull-right">${x} LPM</span> </p>` : "",
-    iNO_Set: (x) => x ? `<p style="margin:0px"> <b>iNO</b> <span class="pull-right">${x} PPM</span> </p>` : ""
+    FiO2: (x,self=null) => x ? `<p style="margin:0px"> <b>FiO2</b> <span class="pull-right">${x}</span> </p>` : "",
+    NC_Flow: (x,self=null) => x ? `<p style="margin:0px"> <b>&#8203;</b> <span class="pull-right">${x} LPM</span> </p>` : "",
+    HFNC_Flow: (x,self=null) => x ? `<p style="margin:0px"> <b>&#8203;</b> <span class="pull-right">${x} LPM</span> </p>` : "",
+    CPAP_PEEP_comb: (x,self=null) => x ? `<p style="margin:0px"> <b>CPAP</b> <span class="pull-right">${x}</span> </p>` : "",
+    BIPAP_EPAP: (x,self=null) => x ? `<p style="margin:0px"> <b>CPAP</b> <span class="pull-right">${x}</span> </p>` : "",
+    BIPAP_IPAP: (x,self=null) => x ? `<p style="margin:0px"> <b>IPAP</b> <span class="pull-right">${x}</span> </p>` : "",
+    BIPAP_Rate: (x,self=null) => x ? `<p style="margin:0px"> <b>Rate</b> <span class="pull-right">${x}</span> </p>` : "",
+    PEEP: (x,self=null) => x ? `<p style="margin:0px"> <b>PEEP</b> <span class="pull-right">${x}</span> </p>` : "",
+    PIP_comb: (x,self=null) => x ? `<p style="margin:0px"> <b>PIP</b> <span class="pull-right">${x}</span> </p>` : "",
+    PS: (x,self=null) => x ? `<p style="margin:0px"> <b>PS</b> <span class="pull-right">${x}</span> </p>` : "",
+    VR: (x,self=null) => x ? `<p style="margin:0px"> <b>Rate</b> <span class="pull-right">${x}</span> </p>` : "",
+    VT_set: (x,self=null) => x ? `<p style="margin:0px"> <b>Tv</b> <span class="pull-right">${x} mL/kg</span> </p>` : "",
+    HFJV_PEEP: (x,self=null) => x ? `<p style="margin:0px"> <b>HFJV PEEP</b> <span class="pull-right">${x}</span> </p>` : "",
+    HFJV_PIP: (x,self=null) => x ? `<p style="margin:0px"> <b>HFJV PIP</b> <span class="pull-right">${x}</span> </p>` : "",
+    HFJV_Rate: (x,self=null) => x ? `<p style="margin:0px"> <b>HFJV Rate</b> <span class="pull-right">${x}</span> </p>` : "",
+    HFOV_Amplitude: (x,self=null) => x ? `<p style="margin:0px"> <b>Amplitude</b> <span class="pull-right">${x}</span> </p>` : "",
+    HFOV_Frequency: (x,self=null) => x ? `<p style="margin:0px"> <b>Frequency</b> <span class="pull-right">${x} Hz</span> </p>` : "",
+    HFOV_MPAW: (x,self=null) => x ? `<p style="margin:0px"> <b>MAP</b> <span class="pull-right">${x}</span> </p>` : "",
+    ECMO_Flow: (x,self=null) => x ? `<p style="margin:0px"> <b>ECMO Flow</b> <span class="pull-right">${x}</span> </p>` : "",
+    MASK_Flow: (x,self=null) => x ? `<p style="margin:0px"> <b>&#8203;</b> <span class="pull-right">${x} LPM</span> </p>` : "",
+    iNO_Set: (x,self=null) => x ? `<p style="margin:0px"> <b>iNO</b> <span class="pull-right">${x} PPM</span> </p>` : "",
+    duration: (x,self) => (x && self) ? `<p style="margin:0px"> <b>Duration</b> <span class="pull-right">${self.prettyInterval(1000)}</span> </p>` : "",
   };
 
   rstlegend.prototype.RSTTitleFormat = function(rst, date_obj){
@@ -144,7 +144,7 @@ teE/gU0BOk2g09gUoNMEOo1NATpNoNMQUkqDlFVh69/npZTXNjfn5uaY7/tzWRtWTdkUrbWSUmaO
       case "VCV":
         ret = `<div style="border-radius:3px; font-size:14px; height:25px; background-color: ${this.boston_morning};"> <b>${rst}</b> <span class="pull-right">${date_obj.toLocaleString()}</span> </div>`;
         break;
-      case "FOV":
+      case "HFOV":
       case "HFJV":
         ret = `<div style="border-radius:3px; font-size:14px; height:25px; background-color: ${this.boston_pink};"> <b>${rst}</b> <span class="pull-right">${date_obj.toLocaleString()}</span> </div>`;
         break;
@@ -153,6 +153,7 @@ teE/gU0BOk2g09gUoNMEOo1NATpNoNMQUkqDlFVh69/npZTXNjfn5uaY7/tzWRtWTdkUrbWSUmaO
         break;
       default:
         // Not supposed to reach here.
+        break;
     }
     return ret;
   };
@@ -179,7 +180,7 @@ teE/gU0BOk2g09gUoNMEOo1NATpNoNMQUkqDlFVh69/npZTXNjfn5uaY7/tzWRtWTdkUrbWSUmaO
     // Individual RSV scores
     let self=this;
     this.RSVToDisplay[rst].forEach(function(rsv){
-      content+=self.RSVDisplayFormat[rsv](self.data_[idx][rsv]);
+      content+=self.RSVDisplayFormat[rsv](self.data_[idx][rsv],self);
     });
     // Write to div
     this.div_.innerHTML=content;
@@ -229,6 +230,47 @@ teE/gU0BOk2g09gUoNMEOo1NATpNoNMQUkqDlFVh69/npZTXNjfn5uaY7/tzWRtWTdkUrbWSUmaO
       select: this.select,
       deselect: this.deselect
     };
+  };
+
+
+  rstlegend.prototype.interval_units = [ ["year",365*24*60*60],
+                                        ["month",30*24*60*60],
+                                        ["day",24*60*60],
+                                        ["hour",60*60],
+                                        ["min",60],
+                                        ["sec",1]
+                                        ];
+  rstlegend.prototype.prettyInterval = function(unix_sec,precision=2){
+    let output = "0 sec";
+    let prepend = '';
+    let tmpSec = unix_sec;
+    if (tmpSec<0){
+      tmpSec = -tmpSec;
+      prepend = '-';
+    }
+    
+    for (let i=0,p=precision; i<this.interval_units.length; i++){
+      let unit = this.interval_units[i][0];
+      let value = this.interval_units[i][1];
+      let num = Math.floor(tmpSec/value);
+      if (p==precision && num==0){
+        continue;
+      }
+      else if (p == precision){
+        output=num+" "+unit;
+        tmpSec-=num*value;
+        p-=1;
+      }
+      else {
+        output+=","+num+" "+unit;
+        tmpSec-=num*value;
+        p-=1;
+      }
+      if (p==0){
+        break;
+      }
+    }
+    return prepend+output;
   };
 
   return rstlegend;

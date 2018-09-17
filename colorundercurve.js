@@ -84,8 +84,7 @@ Dygraph.Plugins.ColorUnderCurve = (function() {
     let g = this.g;
     let canvas = g.hidden_;
     let ctx = g.hidden_ctx_;
-    let scale_x = canvas.width/g.width_;
-    let scale_y = canvas.height/g.height_;
+    let scale = window.devicePixelRatio;
     let start = g.toDomXCoord( new Date(start_sec*1000) );
     let end = g.toDomXCoord( end_sec ? new Date(end_sec*1000) : new Date() );
     let area = g.getArea();
@@ -96,10 +95,10 @@ Dygraph.Plugins.ColorUnderCurve = (function() {
         ) {
       return;
     }
-    let img_data = ctx.getImageData(start*scale_x,
-                                    area.y*scale_y,
-                                    (end-start+1)*scale_x,
-                                    (area.h-1)*scale_y
+    let img_data = ctx.getImageData(start*scale,
+                                    area.y*scale,
+                                    (end-start+1)*scale,
+                                    (area.h-1)*scale
                                     );
     let rgba = this.colorToRGBA(color);
     for (let i=0, stop=img_data.data.length/4; i<stop; i++){
@@ -111,7 +110,7 @@ Dygraph.Plugins.ColorUnderCurve = (function() {
       img_data.data[i*4+1] = rgba[1] * alpha;
       img_data.data[i*4+2] = rgba[2] * alpha;
     }
-    ctx.putImageData(img_data, start*scale_x, area.y*scale_y,);
+    ctx.putImageData(img_data, start*scale, area.y*scale,);
   };
 
   colorundercurve.prototype.colorToRGBA = function(color){

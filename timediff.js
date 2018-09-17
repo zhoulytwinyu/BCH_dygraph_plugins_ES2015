@@ -65,13 +65,12 @@ Dygraph.Plugins.Timediff = (function() {
     let ctxDynamic = this.dynamic_canvas_.getContext("2d");
     let x = e.canvasx;
     let offsetx = this.canvas_position_.x;
-    let scale_x = g.canvas_.width/g.width_;
     let y = e.canvasy;
     let offsety = this.canvas_position_.y;
-    let scale_y = g.canvas_.height/g.height_;
+    let scale = window.devicePixelRatio;
     
-    let pixel_color = ctxPicking.getImageData((x-offsetx)*scale_x,
-                                              (y-offsety)*scale_y,
+    let pixel_color = ctxPicking.getImageData((x-offsetx)*scale,
+                                              (y-offsety)*scale,
                                               1,
                                               1
                                               ).data;
@@ -117,30 +116,29 @@ Dygraph.Plugins.Timediff = (function() {
     this.canvas_position_ = area;
     this.dynamic_canvas_position_.w = area.w;
     this.dynamic_canvas_position_.x = area.x;
-    let scale_x = g.canvas_.width/g.width_;
-    let scale_y = g.canvas_.height/g.height_;
+    let scale = window.devicePixelRatio;
     // Resize canvases
     this.canvas_.style.top = this.canvas_position_.y+"px";
     this.canvas_.style.left = this.canvas_position_.x+"px";
     this.canvas_.style.width = this.canvas_position_.w+"px";
     this.canvas_.style.height = this.canvas_position_.h+"px";
-    this.canvas_.width = this.canvas_position_.w*scale_x;
-    this.canvas_.height = this.canvas_position_.h*scale_y;
-    this.canvas_.getContext("2d").scale(scale_x,scale_y);
+    this.canvas_.width = this.canvas_position_.w*scale;
+    this.canvas_.height = this.canvas_position_.h*scale;
+    this.canvas_.getContext("2d").scale(scale,scale);
     this.picking_canvas_.style.top = this.canvas_position_.y+"px";
     this.picking_canvas_.style.left = this.canvas_position_.x+"px";
     this.picking_canvas_.style.width = this.canvas_position_.w+"px";
     this.picking_canvas_.style.height = this.canvas_position_.h+"px";
-    this.picking_canvas_.width = this.canvas_position_.w*scale_x;
-    this.picking_canvas_.height = this.canvas_position_.h*scale_y;
-    this.picking_canvas_.getContext("2d").scale(scale_x,scale_y);
+    this.picking_canvas_.width = this.canvas_position_.w*scale;
+    this.picking_canvas_.height = this.canvas_position_.h*scale;
+    this.picking_canvas_.getContext("2d").scale(scale,scale);
     this.dynamic_canvas_.style.top = this.dynamic_canvas_position_.y+"px";
     this.dynamic_canvas_.style.left = this.dynamic_canvas_position_.x+"px";
     this.dynamic_canvas_.style.width = this.dynamic_canvas_position_.w+"px";
     this.dynamic_canvas_.style.height = this.dynamic_canvas_position_.h+"px";
-    this.dynamic_canvas_.width = this.dynamic_canvas_position_.w*scale_x;
-    this.dynamic_canvas_.height = this.dynamic_canvas_position_.h*scale_y;
-    this.dynamic_canvas_.getContext("2d").scale(scale_x,scale_y);
+    this.dynamic_canvas_.width = this.dynamic_canvas_position_.w*scale;
+    this.dynamic_canvas_.height = this.dynamic_canvas_position_.h*scale;
+    this.dynamic_canvas_.getContext("2d").scale(scale,scale);
     // Draw on canvases
     this.drawAllLabels();
     this.drawTimeDiff();

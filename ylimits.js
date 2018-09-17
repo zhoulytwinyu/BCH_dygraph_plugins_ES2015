@@ -9,27 +9,38 @@ Dygraph.Plugins.Ylimits = (function() {
   "use strict";
 
   /**
-   * Plot horizontal limits with label sitting on upper right of the
-   * line using dygraph's hidden_ctx_.
+   * Plot horizontal limits with labels sitting vertically centered between
+   * LB, UB lines using dygraph's hidden_ctx_.
    * Options: color, data.
-   * - data format: [{'y','label'} ...]
+   * - data format: [{'LB','UB','label'} ...]
    * @constructor
    */
   var ylimits = function(options) {
     console.log({ylimits:options});
     // Get options
     this.data_ = options.data || [];
-    this.color_ = options.color || "rgba(0,0,0,0.3)";
+    this.color_ = options.color || "rgba(0,0,0,0.25)";
     // Other variables
     this.g = null;
+    this.sideCanvas_ = document.createElement("canvas");
+    this.sideCanvas_ctx_ = this.sideCanvas_.getContext("2d");
+    this.sideCanvas_position = null;
+    // Styling
+    this.sideCanvas_.style.position = "absolute";
   };
-
+  
+  ylimits.prototype.WIDTH=100;
+  
   /**
    * Reset all variables
    */
   ylimits.prototype.destroy = function (){
     this.data_ = null;
     this.color_ = null;
+    this.sideCanvas_.remove();
+    this.sideCanvas_ = null;
+    this.sideCanvas_ctx_ = null;
+    this.sideCanvas_position = null;
     this.g = null;
   };
 
@@ -43,7 +54,24 @@ Dygraph.Plugins.Ylimits = (function() {
   /**
    * Redraw limits on graph redraw.
    */
+  ylimits.prototype.layout = function(e){
+    this.sideCanvas_position_ = e.reserveSpaceRight(this.WIDTH);
+  };
+  
+  /**
+   * Redraw limits on graph redraw.
+   */
   ylimits.prototype.didDrawChart = function(e){
+    let g = this.g;
+    let area = g.getArea();
+    let scale = window.devicePixelRatio;
+    this.sideCanvas_.style.width=this.WIDTH;
+    this.sideCanvas_.style.height=area.h;
+    this.sideCanvas_.style.top=area.y+"px";
+    this.sideCanvas_.style.left=this.sideCanvas_position_.x+"px";
+    this.sideCanvas_.width=this.WIDTH * scale;
+    this.sideCanvas_.height=area.h * scale;
+    this.sideCanvas_ctx_.scale(scale,scale);
     this.drawAllLimits();
   };
   
@@ -53,7 +81,9 @@ Dygraph.Plugins.Ylimits = (function() {
    */
   ylimits.prototype.activate = function(g) {
     this.g = g;
+    g.graphDiv.appendChild(this.sideCanvas_);
     return {
+      layout: this.layout,
       didDrawChart: this.didDrawChart
     };
   };
@@ -71,36 +101,31 @@ Dygraph.Plugins.Ylimits = (function() {
     ctx.save();
     // Set ctx
     ctx.strokeStyle=this.color_;
-    ctx.fillStyle=this.color_;
-    ctx.font="bold 10px Sans";
-    ctx.textAlign = "right";
-    ctx.textBaseline = "bottom";
     ctx.setLineDash([4, 4]);
+    this.sideCanvas_ctx_.textAlign = "left";
+    this.sideCanvas_ctx_.textBaseline = "middle";
+    this.sideCanvas_ctx_.font="bold 10px Sans";
+    this.sideCanvas_ctx_.fillStyle="black";
     // Draw limit lines
     ctx.beginPath();
     for (let i=0; i<this.data_.length; i++){
       let row = this.data_[i];
-      let y = this.g.toDomYCoord(row["y"]);
+      let y = this.g.toDomYCoord(row["LB"]);
+      ctx.moveTo(area.x, Math.floor(y)+0.5);
+      ctx.lineTo(area.x+area.w, Math.floor(y)+0.5);
+      y = this.g.toDomYCoord(row["UB"]);
       ctx.moveTo(area.x, Math.floor(y)+0.5);
       ctx.lineTo(area.x+area.w, Math.floor(y)+0.5);
     }
     ctx.stroke();
     // Draw labels
-    let prev_y = this.g.toDomYCoord(this.data_[0]["y"]);
-    let prev_label = this.data_[0]["label"];
-    for (let i=1; i<this.data_.length; i++){
+    for (let i=0; i<this.data_.length; i++){
       let row = this.data_[i];
-      let y = this.g.toDomYCoord(row["y"]);
+      let y = this.g.toDomYCoord( (row["LB"]+row["UB"])/2 ) - area.y;
       let label = row["label"];
       // Draw previous label if fit
-      if (prev_y-y >= 10){
-        ctx.fillText(prev_label, area.x+area.w, prev_y);
-      }
-      prev_y=y;
-      prev_label=label;
+      this.sideCanvas_ctx_.fillText(label, 0, y);
     }
-    // Draw last label
-    ctx.fillText(prev_label, area.x+area.w, prev_y);
     // Restore settings
     ctx.restore();
   };
