@@ -93,11 +93,11 @@ teE/gU0BOk2g09gUoNMEOo1NATpNoNMQUkqDlFVh69/npZTXNjfn5uaY7/tzWRtWTdkUrbWSUmaO
     "CPAP":["CPAP_PEEP_comb","FiO2"],
     "BIPAP":["BIPAP_IPAP","BIPAP_EPAP","BIPAP_Rate","FiO2"],
     "PSV":["PEEP","PS","FiO2","iNO_Set","duration"],
-    "PCV":["VT_set","PIP_comb","PEEP","PS","VR","FiO2","iNO_Set","duration"],
-    "VCV":["VT_set","PEEP","PS","VR","FiO2","iNO_Set"],
+    "PCV":["VT_set_norm","PIP_comb","PEEP","PS","VR","FiO2","iNO_Set","duration"],
+    "VCV":["VT_set_norm","PEEP","PS","VR","FiO2","iNO_Set"],
     "HFOV":["HFOV_MPAW","HFOV_Amplitude","HFOV_Frequency","FiO2","iNO_Set"],
     "HFJV":["FiO2","HFJV_PEEP","HFJV_PIP","HFJV_Rate","iNO_Set"],
-    "ECMO":["ECMO_Flow"]
+    "ECMO":["ECMO_Flow_norm"]
   };
 
   rstlegend.prototype.RSVDisplayFormat = {
@@ -112,14 +112,14 @@ teE/gU0BOk2g09gUoNMEOo1NATpNoNMQUkqDlFVh69/npZTXNjfn5uaY7/tzWRtWTdkUrbWSUmaO
     PIP_comb: (x,self=null) => x ? `<p style="margin:0px"> <b>PIP</b> <span class="pull-right">${x}</span> </p>` : "",
     PS: (x,self=null) => x ? `<p style="margin:0px"> <b>PS</b> <span class="pull-right">${x}</span> </p>` : "",
     VR: (x,self=null) => x ? `<p style="margin:0px"> <b>Rate</b> <span class="pull-right">${x}</span> </p>` : "",
-    VT_set: (x,self=null) => x ? `<p style="margin:0px"> <b>Tv</b> <span class="pull-right">${x} mL/kg</span> </p>` : "",
+    VT_set_norm: (x,self=null) => x ? `<p style="margin:0px"> <b>Tv</b> <span class="pull-right">${x} mL/kg</span> </p>` : "",
     HFJV_PEEP: (x,self=null) => x ? `<p style="margin:0px"> <b>HFJV PEEP</b> <span class="pull-right">${x}</span> </p>` : "",
     HFJV_PIP: (x,self=null) => x ? `<p style="margin:0px"> <b>HFJV PIP</b> <span class="pull-right">${x}</span> </p>` : "",
     HFJV_Rate: (x,self=null) => x ? `<p style="margin:0px"> <b>HFJV Rate</b> <span class="pull-right">${x}</span> </p>` : "",
     HFOV_Amplitude: (x,self=null) => x ? `<p style="margin:0px"> <b>Amplitude</b> <span class="pull-right">${x}</span> </p>` : "",
     HFOV_Frequency: (x,self=null) => x ? `<p style="margin:0px"> <b>Frequency</b> <span class="pull-right">${x} Hz</span> </p>` : "",
     HFOV_MPAW: (x,self=null) => x ? `<p style="margin:0px"> <b>MAP</b> <span class="pull-right">${x}</span> </p>` : "",
-    ECMO_Flow: (x,self=null) => x ? `<p style="margin:0px"> <b>ECMO Flow</b> <span class="pull-right">${x}</span> </p>` : "",
+    ECMO_Flow_norm: (x,self=null) => x ? `<p style="margin:0px"> <b>ECMO Flow</b> <span class="pull-right">${x}</span> </p>` : "",
     MASK_Flow: (x,self=null) => x ? `<p style="margin:0px"> <b>&#8203;</b> <span class="pull-right">${x} LPM</span> </p>` : "",
     iNO_Set: (x,self=null) => x ? `<p style="margin:0px"> <b>iNO</b> <span class="pull-right">${x} PPM</span> </p>` : "",
     duration: (x,self) => (x && self) ? `<p style="margin:0px"> <b>Duration</b> <span class="pull-right">${self.prettyInterval(1000)}</span> </p>` : "",

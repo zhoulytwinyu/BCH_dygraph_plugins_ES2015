@@ -18,8 +18,6 @@ Dygraph.Plugins.Timediff = (function() {
     console.log({timediff:options});
     // Copy over options
     this.data_ = options.data || [];
-    this.color_selected_ = options.color_selected || this.boston_red;
-    this.color_normal_ = options.color_normal || "black";
     // Create other variables
     this.g = null;
     this.canvas_=document.createElement("canvas");
@@ -30,12 +28,10 @@ Dygraph.Plugins.Timediff = (function() {
     this.selected_event_idx_ = null;
     this.selected_data_time_ = null;
   };
-  timediff.prototype.boston_red = "#F6323E";
+  timediff.prototype.BOSTON_RED = "#F6323E";
 
   timediff.prototype.destroy = function() {
     this.data_ = null;
-    this.color_selected_ = null;
-    this.color_normal_ = null;
     this.g = null;
     this.canvas_= null;
     this.dynamic_canvas_ = null;
@@ -54,8 +50,7 @@ Dygraph.Plugins.Timediff = (function() {
   };
 
   timediff.prototype.layout = function(e){
-    let position = e.reserveSpaceTop(12);
-    this.dynamic_canvas_position_=position;
+    this.dynamic_canvas_position_ = e.reserveSpaceTop(12);
   };
 
   timediff.prototype.click = function(e) {
