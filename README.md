@@ -52,11 +52,11 @@ Under construction.
   * upper: id to assign to upper panel, format: with no '#' prepended
   * right: id to assign to right panel, format: with no '#' prepended
   * hover: id to assign to hover panel, format: with no '#' prepended
-![locations_screenshot](locations.png)
+![utildiv_screenshot](utildiv.png)
 
 ## unzoom
 * R source: unzoom.r
 * R function: dyUnzoom
 * Arguments:
   * divId: id of div to put the unzoom button in, format: with no '#' prepended
-![locations_screenshot](locations.png)
+![unzoom_screenshot](unzoom.png)
