@@ -190,15 +190,14 @@ Dygraph.Plugins.Timediff = (function() {
     return id;
   };
 
-  timediff.prototype.drawLabel=function (ctx, x, ymin, ymax, label, color){
+  timediff.prototype.drawLabel=function (ctx, x, ymin, ymax, label, styleString){
     let label_offsetX = 3;
     let label_offsetY = -3;
     x = Math.floor(x)+0.5;
     // Line stroke
     ctx.save();
+    this.applyStyle(ctx,styleString);
     ctx.beginPath();
-    ctx.strokeStyle=color;
-    ctx.setLineDash([4, 2]);
     ctx.moveTo(x, ymin);
     ctx.lineTo(x, ymax);
     ctx.stroke();
@@ -206,8 +205,6 @@ Dygraph.Plugins.Timediff = (function() {
     ctx.translate(x, ymin);
     ctx.rotate(Math.PI/2);
     ctx.textAlign = "left";
-    ctx.font= "8px sans-serif";
-    ctx.fillStyle= color;
     ctx.fillText(label, label_offsetX, label_offsetY);
     ctx.restore();
   };
@@ -221,43 +218,57 @@ Dygraph.Plugins.Timediff = (function() {
     ctx.translate(x, ymin);
     ctx.rotate(Math.PI/2);
     ctx.textAlign = "left";
-    ctx.font= "8px sans-serif";
+    ctx.font= "10 Arial";
     ctx.fillStyle= color;
     let labelShape = ctx.measureText(label);
     ctx.fillRect(label_offsetX, label_offsetY, labelShape.width, -8); // 8 is because of the font size
     ctx.restore();
   };
   
-  timediff.prototype.drawAllLabels = function (){ 
+  timediff.prototype.drawAllLabels = function (){
+    let g = this.g;
+    let dateRange = g.xAxisRange();
+    let lbl_col = "abbreviation";
+    if (dateRange[1]-dateRange[0] < 30*24*3600*1000) // Resolution of 1 month
+      lbl_col = "label" 
     let ctx = this.canvas_.getContext("2d");
     // Draw all labels
+    ctx.globalAlpha=0.5;
+    let selected_event_idx = this.selected_event_idx_;
     for (let i=0; i<this.data_.length; i++) {
+      if (i === selected_event_idx) continue;
       let row = this.data_[i];
       let x = this.toCanvasXCoord( new Date(1000*row["time"]),
                                    this.canvas_position_.x);
-      let label = row["label"];
-      this.drawLabel(ctx, x, 0, this.g.height_, label, this.color_normal_ );
+      let label = row[lbl_col];
+      let styleString = row["style"] || "";
+      this.drawLabel(ctx, x, 0, this.g.height_, label, styleString);
     }
-    
     // Draw the selected label
-    let selected_event_idx = this.selected_event_idx_;
+    ctx.globalAlpha=1;
     if (selected_event_idx!==null){
       let row = this.data_[selected_event_idx];
       let x = this.toCanvasXCoord( new Date(1000*row["time"]),
                                     this.canvas_position_.x);
-      let label = row["label"];
-      this.drawLabel(ctx, x, 0, this.g.height_, label, this.color_selected_ );
+      let label = row[lbl_col];
+      let styleString = row["style"] || "";
+      this.drawLabel(ctx, x, 0, this.g.height_, label, styleString );
     }
   }
   
-  timediff.prototype.drawAllLabelsPicking = function (){
+  timediff.prototype.drawAllLabelsPicking = function (lbl_name){
+    let g = this.g;
+    let dateRange = g.xAxisRange();
+    let lbl_col = "abbreviation";
+    if (dateRange[1]-dateRange[0] < 30*24*3600*1000) // Resolution of 1 month
+      lbl_col = "label" 
     let ctx = this.picking_canvas_.getContext("2d");
     // Draw all labels picking
     for (let i=0; i<this.data_.length; i++) {
       let row = this.data_[i];
       let x = this.toCanvasXCoord( new Date(1000*row["time"]),
                                     this.canvas_position_.x);
-      let label = row["label"];
+      let label = row[lbl_col];
       this.drawLabelPicking(ctx, x, 0, this.picking_canvas_.height, label, i);
     }
   }
@@ -275,13 +286,13 @@ Dygraph.Plugins.Timediff = (function() {
     let timediffLabel = this.prettyInterval(selected_data_time - eventTime);
     // Draw
     let ctx = dynamic_canvas.getContext("2d");
-    ctx.font="10px sans-serif";
+    ctx.font="10 Arial";
     let timediffLabelWidth = ctx.measureText(timediffLabel).width;
     let eventX = this.toCanvasXCoord( new Date(1000*eventTime),
                                       this.dynamic_canvas_position_.x);
     let dataX = this.toCanvasXCoord(new Date(1000*selected_data_time),
                                     this.dynamic_canvas_position_.x);
-    let color = this.color_selected_;
+    let color = this.BOSTON_RED;
     ctx.strokeStyle=color;
     ctx.fillStyle=color;
     ctx.textBaseline = "middle";
@@ -327,27 +338,64 @@ Dygraph.Plugins.Timediff = (function() {
     if (direction==="left"){
       ctx.beginPath();
       ctx.moveTo(x+1, y);
-      ctx.lineTo(x+4, y-4);
-      ctx.moveTo(x+1, y);
-      ctx.lineTo(x+4, y+4);
-      ctx.moveTo(x+1, y);
-      ctx.lineTo(x+8, y);
-      ctx.stroke();
+      ctx.lineTo(x+6, y-6);
+      ctx.lineTo(x+6, y+6);
+      ctx.closePath();
+      ctx.fill();
       return;
     }
     if (direction==="right"){
       ctx.beginPath();
       ctx.moveTo(x-1, y);
-      ctx.lineTo(x-4, y-4);
-      ctx.moveTo(x-1, y);
-      ctx.lineTo(x-4, y+4);
-      ctx.moveTo(x-1, y);
-      ctx.lineTo(x-8, y);
-      ctx.stroke();
+      ctx.lineTo(x-6, y-6);
+      ctx.lineTo(x-6, y+6);
+      ctx.closePath();
+      ctx.fill();
       return;
     }
   }
-
+  
+  timediff.prototype.applyStyle = function (ctx, styleString){
+    let styles = styleString.split(';');
+    let fs="10px";
+    let fw=""; // normal
+    let lt="solid";
+    let color="black";
+    // Get style from string
+    for (let style of styles){
+      let kv = style.split(':');
+      let k = kv[0];
+      let v = kv[1];
+      switch (k){
+        case "font-size":
+          fs = v;
+          break;
+        case "font-weight":
+          fw = v;
+          break;
+        case "line-type":
+          lt = v;
+          break;
+        case "color":
+          color = v;
+          break;
+        default:
+          // No supposed to reach here
+          break;
+      }
+    }
+    // Apply style
+    ctx.font = `${fw} ${fs} Arial`;
+    ctx.fillStyle = color;
+    ctx.strokeStyle = color;
+    if (lt === "dash")
+      ctx.setLineDash([4]);
+    else if (lt === "solid")
+      ctx.setLineDash([]);
+    else
+      throw `${this.constructor.name}: Invalid line type ${lt}.`
+  };
+  
   timediff.prototype.interval_units = [ ["year",365*24*60*60],
                                         ["month",30*24*60*60],
                                         ["day",24*60*60],
