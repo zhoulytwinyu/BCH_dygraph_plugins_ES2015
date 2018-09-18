@@ -44,6 +44,7 @@ Under construction.
 * Arguments:
   * data: a R data.frame with columns: "start", "end" and "color"
   "start", "end" need to be a number indicating seconds since Unix epoch.
+![colorundercurve_screenshot](colorundercurve.png)
 
 ## utildiv
 * R source: utildiv.r
