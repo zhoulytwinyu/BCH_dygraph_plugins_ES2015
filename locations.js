@@ -17,9 +17,6 @@ Dygraph.Plugins.Locations = (function() {
     console.log({locations:options});
     // Variables from options
     this.data_ = options.data || [];
-    this.color_mapping_ = options.color_mapping || {};
-    this.color_default_ = options.color_default || this.boston_warm_gray;
-    this.color_bg_ = options.color_bg || this.cityboston_gray4;
     // Other variables
     this.g=null;
     this.canvas_ = document.createElement("canvas");
@@ -101,7 +98,7 @@ Dygraph.Plugins.Locations = (function() {
     this.canvas_.height = this.canvas_position_.h*scale_y;
     var ctx = this.canvas_.getContext("2d");
     ctx.scale(scale_x,scale_y);
-    ctx.fillStyle=this.color_bg_;
+    ctx.fillStyle=this.cityboston_gray4;
     ctx.fillRect(0, 0, this.canvas_.width, this.canvas_.height);
     this.picking_canvas_.style.left = this.canvas_position_.x+"px";
     this.picking_canvas_.style.top = this.canvas_position_.y+"px";
@@ -193,9 +190,8 @@ Dygraph.Plugins.Locations = (function() {
       let start = this.toCanvasXCoord( new Date(1000*row["start"]) );
       let end = this.toCanvasXCoord( row["end"] ? new Date(1000*row["end"]) : new Date());
       let label = row["label"];
-      ctx.fillStyle = this.color_mapping_.hasOwnProperty(label) ?
-                      this.color_mapping_[label] :
-                      this.color_default_;
+      let color = row["color"];
+      ctx.fillStyle = color;
       ctx.fillRect(start,1,end-start,20);
     }
   };

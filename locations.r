@@ -1,11 +1,9 @@
-dyLocation <- function(dygraph,data,color_mapping) {
+dyLocation <- function(dygraph,data) {
   dyPlugin(
     dygraph = dygraph,
     name = "Locations",
     path = "BCH_dygraph_plugins/locations.js",
-    options=list( data=toJSON(data),
-                  color_mapping = toJSON(color_mapping,
-                                         auto_unbox=TRUE)
+    options=list( data=toJSON(data)
                   )
   )
 }

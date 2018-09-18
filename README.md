@@ -21,16 +21,14 @@ Under construction.
 * R source: timediff.r
 * R function: dyTimediff
 * Arguments:
-  * data: a R data.frame with columns: "label" and "time".
-  * Optional arguments: (TODO)
+  * data: a R data.frame with columns: "label", "time", "abbreviation", "style".
 ![timediff_screenshot](timediff.png)
 
 ## locations (banner)
 * R source: locations.r
 * R function: dyLocations
 * Arguments:
-  * data: a R data.frame with columns: "label", "start" and "end".
-  * color_mapping: R list e.g. list(ward1 = 'red')
+  * data: a R data.frame with columns: "label", "color", "start" and "end"
 ![locations_screenshot](locations.png)
 
 ## ylimits
@@ -38,6 +36,7 @@ Under construction.
 * R function: dyYLimits
 * Arguments:
   * data: a R data.frame with columns: "LB", "UB" and "label"
+![ylimits_screenshot](ylimits.png)
 
 ## colorundercurve
 * R source: colorundercurve.r
