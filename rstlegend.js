@@ -85,18 +85,18 @@ teE/gU0BOk2g09gUoNMEOo1NATpNoNMQUkqDlFVh69/npZTXNjfn5uaY7/tzWRtWTdkUrbWSUmaO
    * Class variables
    */
   rstlegend.prototype.RSVToDisplay = {
-    "RA":[],
-    "NC":["NC_Flow","FiO2","iNO_Set"],
-    "MASK":["MASK_Flow","FiO2"],
-    "BB":["NC_Flow","FiO2"],
-    "HFNC":["HFNC_Flow","FiO2","iNO_Set"],
-    "CPAP":["CPAP_PEEP_comb","FiO2"],
-    "BIPAP":["BIPAP_IPAP","BIPAP_EPAP","BIPAP_Rate","FiO2"],
-    "PSV":["PEEP","PS","FiO2","iNO_Set","duration"],
-    "PCV":["VT_set_norm","PIP_comb","PEEP","PS","VR","FiO2","iNO_Set","duration"],
-    "VCV":["VT_set_norm","PEEP","PS","VR","FiO2","iNO_Set"],
-    "HFOV":["HFOV_MPAW","HFOV_Amplitude","HFOV_Frequency","FiO2","iNO_Set"],
-    "HFJV":["FiO2","HFJV_PEEP","HFJV_PIP","HFJV_Rate","iNO_Set"],
+    "RA":["ECMO_Flow_norm"],
+    "NC":["ECMO_Flow_norm","NC_Flow","FiO2","iNO_Set"],
+    "MASK":["ECMO_Flow_norm","MASK_Flow","FiO2"],
+    "BB":["ECMO_Flow_norm","NC_Flow","FiO2"],
+    "HFNC":["ECMO_Flow_norm","HFNC_Flow","FiO2","iNO_Set"],
+    "CPAP":["ECMO_Flow_norm","CPAP_PEEP_comb","FiO2"],
+    "BIPAP":["ECMO_Flow_norm","BIPAP_IPAP","BIPAP_EPAP","BIPAP_Rate","FiO2"],
+    "PSV":["ECMO_Flow_norm","PEEP","PS","FiO2","iNO_Set","duration"],
+    "PCV":["ECMO_Flow_norm","VT_set_norm","PIP_comb","PEEP","PS","VR","FiO2","iNO_Set","duration"],
+    "VCV":["ECMO_Flow_norm","VT_set_norm","PEEP","PS","VR","FiO2","iNO_Set"],
+    "HFOV":["ECMO_Flow_norm","HFOV_MPAW","HFOV_Amplitude","HFOV_Frequency","FiO2","iNO_Set"],
+    "HFJV":["ECMO_Flow_norm","FiO2","HFJV_PEEP","HFJV_PIP","HFJV_Rate","iNO_Set"],
     "ECMO":["ECMO_Flow_norm"]
   };
 
@@ -125,31 +125,50 @@ teE/gU0BOk2g09gUoNMEOo1NATpNoNMQUkqDlFVh69/npZTXNjfn5uaY7/tzWRtWTdkUrbWSUmaO
     duration: (x,self) => (x && self) ? `<p style="margin:0px"> <b>Duration</b> <span class="pull-right">${self.prettyInterval(1000)}</span> </p>` : "",
   };
 
-  rstlegend.prototype.RSTTitleFormat = function(rst, date_obj){
+  rstlegend.prototype.RSTTitleFormat = function(record, date_obj){
     let ret = null;
-    switch(rst) {
+    switch(record.RST) {
       case "RA":
       case "NC":
       case "MASK":
       case "BB":
-        ret = `<div style="border-radius:3px; font-size:14px; height:25px; background-color: ${this.boston_meadow};"> <b>${rst}</b> <span class="pull-right">${date_obj.toLocaleString()}</span> </div>`;
+        ret = `
+          <div style="border-radius:3px; font-size:14px; height:25px; background-color: ${this.boston_meadow};">
+            <p><b>${record.RST}</b> <span class="pull-right">${date_obj.toLocaleString()}</span></p>
+            ${record.ECMO_flow_norm ? "<div class=\"panel panel-warning\"><b>ECMO Flow</b> <span class=\"pull-right\">"+record.ECMO_flow_norm+"</span></div>" : ""}
+          </div>`;
         break;
       case "HFNC":
       case "CPAP":
       case "BIPAP":
-        ret = `<div style="border-radius:3px; font-size:14px; height:25px; background-color: ${this.boston_sky};"> <b>${rst}</b> <span class="pull-right">${date_obj.toLocaleString()}</span> </div>`;
+        ret = `
+          <div style="border-radius:3px; font-size:14px; height:25px; background-color: ${this.boston_sky};">
+            <p><b>${record.RST}</b> <span class="pull-right">${date_obj.toLocaleString()}</span></p>
+            ${record.ECMO_flow_norm ? "<div class=\"panel panel-warning\"><b>ECMO Flow</b> <span class=\"pull-right\">"+record.ECMO_flow_norm+"</span></div>" : ""}
+          </div>`;
         break;
       case "PSV":
       case "PCV":
       case "VCV":
-        ret = `<div style="border-radius:3px; font-size:14px; height:25px; background-color: ${this.boston_morning};"> <b>${rst}</b> <span class="pull-right">${date_obj.toLocaleString()}</span> </div>`;
+        ret = `
+          <div style="border-radius:3px; font-size:14px; height:25px; background-color: ${this.boston_morning};">
+            <p><b>${record.RST}</b> <span class="pull-right">${date_obj.toLocaleString()}</span></p>
+            ${record.ECMO_flow_norm ? "<div class=\"panel panel-warning\"><b>ECMO Flow</b> <span class=\"pull-right\">"+record.ECMO_flow_norm+"</span></div>" : ""}
+          </div>`;
         break;
       case "HFOV":
       case "HFJV":
-        ret = `<div style="border-radius:3px; font-size:14px; height:25px; background-color: ${this.boston_pink};"> <b>${rst}</b> <span class="pull-right">${date_obj.toLocaleString()}</span> </div>`;
+        ret = `
+          <div style="border-radius:3px; font-size:14px; height:25px; background-color: ${this.boston_pink};">
+            <p><b>${record.RST}</b> <span class="pull-right">${date_obj.toLocaleString()}</span></p>
+            ${record.ECMO_flow_norm ? "<div class=\"panel panel-warning\"><b>ECMO Flow</b> <span class=\"pull-right\">"+record.ECMO_flow_norm+"</span></div>" : ""}
+          </div>`;
         break;
       case "ECMO":
-        ret = `<div style="border-radius:3px; font-size:14px; height:25px; background-color: ${this.boston_red};"> <b>${rst}</b> <span class="pull-right">${date_obj.toLocaleString()}</span> </div>`;
+        ret = `
+          <div style="border-radius:3px; font-size:14px; height:25px; background-color: ${this.boston_red};">
+            <p><b>${record.RST}</b> <span class="pull-right">${date_obj.toLocaleString()}</span></p>
+         </div>`;
         break;
       default:
         // Not supposed to reach here.
@@ -173,9 +192,10 @@ teE/gU0BOk2g09gUoNMEOo1NATpNoNMQUkqDlFVh69/npZTXNjfn5uaY7/tzWRtWTdkUrbWSUmaO
     let content = "";
 
     // Title
-    let rst = this.data_[idx]["RST"];
-    let time = new Date(this.data_[idx]["time"]*1000);
-    content += this.RSTTitleFormat(rst,time);
+    let record=this.data_[idx];
+    let rst = record["RST"];
+    let time = new Date(record["time"]*1000);
+    content += this.RSTTitleFormat(record,time);
     
     // Individual RSV scores
     let self=this;
