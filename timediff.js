@@ -26,9 +26,11 @@ Dygraph.Plugins.Timediff = (function() {
     this.dynamic_canvas_ = document.createElement("canvas");
     this.dynamic_canvas_position_=null;
     this.selected_event_idx_ = null;
+    this.default_selected_ = true;
     this.selected_data_time_ = null;
   };
   timediff.prototype.BOSTON_RED = "#F6323E";
+  timediff.prototype.BOSTON_MEADOW = "#A4D65E";
 
   timediff.prototype.destroy = function() {
     this.data_ = null;
@@ -39,6 +41,7 @@ Dygraph.Plugins.Timediff = (function() {
     this.canvas_position_=null;
     this.dynamic_canvas_position_=null;
     this.selected_event_idx_ = null;
+    this.default_selected_ = true;
     this.selected_data_time_ = null;
   };
 
@@ -75,18 +78,30 @@ Dygraph.Plugins.Timediff = (function() {
       return;
     }
     this.selected_event_idx_=eventIdx;
+    if (this.selected_event_idx_===null) {
+      this.default_selected_=true;
+    }
+    else {
+      this.default_selected_=false;
+    }
     ctxDraw.clearRect(0, 0, this.canvas_.width, this.canvas_.height);
-    this.drawAllLabels();
     ctxDynamic.clearRect(0, 0, this.dynamic_canvas_.width, this.dynamic_canvas_.height);
+    this.drawAllLabels();
     this.drawTimeDiff();
   };
 
   timediff.prototype.select = function(e) {
     this.selected_data_time_ = Math.floor(e.selectedX/1000);
-    if (this.selected_event_idx_===null){
-      return;
-    }
+    let ctxDraw = this.canvas_.getContext("2d");
     let ctxDynamic = this.dynamic_canvas_.getContext("2d");
+    if (this.default_selected_) {
+      let cur_default_event_idx = this.selectDefaultEvent(this.selected_data_time_);
+      if (cur_default_event_idx !== this.selected_event_idx_) {
+        this.selected_event_idx_ = cur_default_event_idx;
+        ctxDraw.clearRect(0, 0, this.canvas_.width, this.canvas_.height);
+        this.drawAllLabels();
+      }
+    }
     ctxDynamic.clearRect(0, 0, this.dynamic_canvas_.width, this.dynamic_canvas_.height);
     this.drawTimeDiff();
   };
@@ -182,12 +197,24 @@ Dygraph.Plugins.Timediff = (function() {
     if (a !== 255){
       return null;
     }
-    
     let r = rgba[0];
     let g = rgba[1];
     let b = rgba[2];
     let id = r*65536+g*256+b;
     return id;
+  };
+
+  timediff.prototype.selectDefaultEvent = function(unix_sec){
+    let idx = null;
+    for (let i=0; i<this.data_.length; i++){
+      let row = this.data_[i];
+      if (row.time>unix_sec)
+        break;
+      if (row.default_selectable) {
+        idx = i;
+      }
+    }
+    return idx;
   };
 
   timediff.prototype.drawLabel=function (ctx, x, ymin, ymax, label, styleString){
@@ -234,9 +261,7 @@ Dygraph.Plugins.Timediff = (function() {
     let ctx = this.canvas_.getContext("2d");
     // Draw all labels
     ctx.globalAlpha=0.5;
-    let selected_event_idx = this.selected_event_idx_;
     for (let i=0; i<this.data_.length; i++) {
-      if (i === selected_event_idx) continue;
       let row = this.data_[i];
       let x = this.toCanvasXCoord( new Date(1000*row["time"]),
                                    this.canvas_position_.x);
@@ -246,8 +271,9 @@ Dygraph.Plugins.Timediff = (function() {
     }
     // Draw the selected label
     ctx.globalAlpha=1;
-    if (selected_event_idx!==null){
-      let row = this.data_[selected_event_idx];
+    if (this.selected_event_idx_!==null){
+      let idx = this.selected_event_idx_;
+      let row = this.data_[idx];
       let x = this.toCanvasXCoord( new Date(1000*row["time"]),
                                     this.canvas_position_.x);
       let label = row[lbl_col];
@@ -255,7 +281,7 @@ Dygraph.Plugins.Timediff = (function() {
       this.drawLabel(ctx, x, 0, this.g.height_, label, styleString );
     }
   }
-  
+
   timediff.prototype.drawAllLabelsPicking = function (lbl_name){
     let g = this.g;
     let dateRange = g.xAxisRange();
