@@ -21,7 +21,7 @@ Under construction.
 * R source: timediff.r
 * R function: dyTimediff
 * Arguments:
-  * data: a R data.frame with columns: "label", "time", "abbreviation", "style".
+  * data: a R data.frame with columns: "label", "time", "abbreviation", "style", "default_selectable".
 ![timediff_screenshot](timediff.png)
 
 ## locations (banner)
