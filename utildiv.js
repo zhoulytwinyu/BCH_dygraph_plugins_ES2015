@@ -73,9 +73,12 @@ Dygraph.Plugins.UtilDiv = (function() {
    * Removes DOM, clear variables
    */
   utildiv.prototype.destroy = function (){
-    this.upper_.remove();
-    this.right_.remove();
-    this.hover_.remove();
+    if (this.upper_)
+      this.upper_.remove();
+    if (this.right_)
+      this.right_.remove();
+    if (this.hover_)
+      this.hover_.remove();
     this.upper_ = null;
     this.right_ = null;
     this.hover_ = null;
