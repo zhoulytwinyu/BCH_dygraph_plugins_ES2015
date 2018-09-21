@@ -1,7 +1,7 @@
 # BCH_dygraph_plugins
 Highly customized and targeted dygraphs.js plugins developed for BCH. Runs with dygraphs v1.1.1 in R Shiny
 
-Under construction.
+Under active construction.
 
 ##Basic usage:
 1. Source the R file, e.g. `source("BCH_dygraph_plugins/rstlegend.r")`
