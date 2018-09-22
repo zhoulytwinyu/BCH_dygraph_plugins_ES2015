@@ -94,21 +94,23 @@ Dygraph.Plugins.Timediff = (function() {
     this.selected_data_time_ = Math.floor(e.selectedX/1000);
     let ctxDraw = this.canvas_.getContext("2d");
     let ctxDynamic = this.dynamic_canvas_.getContext("2d");
+    let scale = window.devicePixelRatio;
     if (this.default_selected_) {
       let cur_default_event_idx = this.selectDefaultEvent(this.selected_data_time_);
       if (cur_default_event_idx !== this.selected_event_idx_) {
         this.selected_event_idx_ = cur_default_event_idx;
-        ctxDraw.clearRect(0, 0, this.canvas_.width, this.canvas_.height);
+        ctxDraw.clearRect(0, 0, this.canvas_.width/scale, this.canvas_.height/scale);
         this.drawAllLabels();
       }
     }
-    ctxDynamic.clearRect(0, 0, this.dynamic_canvas_.width, this.dynamic_canvas_.height);
+    ctxDynamic.clearRect(0, 0, this.dynamic_canvas_.width/scale, this.dynamic_canvas_.height/scale);
     this.drawTimeDiff();
   };
 
   timediff.prototype.deselect = function(e) {
     let dynamic_canvas=this.dynamic_canvas_;
-    dynamic_canvas.getContext("2d").clearRect(0, 0, dynamic_canvas.width, dynamic_canvas.height);
+    let scale = window.devicePixelRatio;
+    dynamic_canvas.getContext("2d").clearRect(0, 0, dynamic_canvas.width/scale, dynamic_canvas.height/scale);
   };
 
   timediff.prototype.clearChart = function(e) {
@@ -172,7 +174,7 @@ Dygraph.Plugins.Timediff = (function() {
       select: this.select,
       deselect: this.deselect,
       clearChart: this.clearChart,
-      didDrawChart: this.didDrawChart,
+      didDrawChart: this.didDrawChart
     };
   };
 
