@@ -49,7 +49,7 @@ Dygraph.Plugins.Locations = (function() {
 
   locations.prototype.layout = function(e) {
     this.canvas_position_ = e.reserveSpaceTop(22);
-    this.floater_.style.top = this.canvas_position_.x+"px";
+    this.floater_.style.top = this.canvas_position_.y+"px";
   };
 
   locations.prototype.select = function(e) {
