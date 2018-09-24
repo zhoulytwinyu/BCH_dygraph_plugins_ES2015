@@ -61,3 +61,10 @@ Under active construction.
 * Arguments:
   * divId: id of div to put the unzoom button in, format: with no '#' prepended
 ![unzoom_screenshot](unzoom.png)
+
+## scrosshair (synchronized crosshair)
+* R source: scorsshair.r
+* R function: dySCrosshair
+* Arguments:
+  * group, type: string. crosshair with the same group name is synced.
+![unzoom_screenshot](scrosshair.png)
