@@ -15,7 +15,6 @@ Dygraph.Plugins.SCrosshair = (function() {
     console.log({scrosshair:options});
     // Get options
     this.group = options.group;
-    this.mode = options.mode;
     // Other variables
     this.g = null;
     this.canvas = document.createElement("canvas");
@@ -28,7 +27,14 @@ Dygraph.Plugins.SCrosshair = (function() {
   };
 
   scrosshair.prototype.destroy = function () {
-    // TODO
+    scrosshair.synchronizer.remove(this);
+    this.group = null;
+    // Other variables
+    this.g = null;
+    this.canvas.remove();
+    this.canvas=null;
+    this.graph_clientX=null;
+    this.ctx = null;
   };
 
   /**
@@ -108,11 +114,11 @@ Dygraph.Plugins.SCrosshair = (function() {
       this.groups[sc.group].push(sc);
     },
 
-    remove: function(sc) {
-      if (this.groups[sc.group]){
+    remove: function(sc) {;
+      if (this.groups[sc.group]) {
         let idx = this.groups[sc.group].indexOf(sc);
         if (idx !== -1) {
-          this.groups[sc.group].slice(idx);
+          this.groups[sc.group].splice(idx,1);
         }
       }
     },
