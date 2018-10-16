@@ -4,10 +4,9 @@
  * GNU Lesser General Public License v3.0
  */
 
-/*global Dygraph:false */
-Dygraph.Plugins.UtilDiv = (function() {
-  "use strict";
+import Dygraph from "dygraphs";
 
+Dygraph.Plugins.UtilDiv = (function() {
   /**
    * Create divs on upper, right, and hover position with specified ids.
    * The divs, if specified, will show when mouse hovers on the graph.

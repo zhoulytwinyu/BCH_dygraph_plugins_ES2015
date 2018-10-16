@@ -1,5 +1,5 @@
 # BCH_dygraph_plugins
-Highly customized and targeted dygraphs.js plugins developed for BCH. Runs with dygraphs v1.1.1 in R Shiny
+Highly customized and targeted dygraphs.js plugins developed for BCH. Runs with dygraphs v2.1.0.
 
 Under active construction.
 

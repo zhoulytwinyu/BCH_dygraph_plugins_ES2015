@@ -4,7 +4,8 @@
  * GNU Lesser General Public License v3.0
  */
 
-/*global Dygraph:false */
+import Dygraph from "dygraphs";
+
 Dygraph.Plugins.Devtemplate = (function() {
   "use strict";
 
