@@ -7,7 +7,6 @@
 import Dygraph from "dygraphs";
 
 Dygraph.Plugins.TimeToBirth = (function() {
-  "use strict";
 
   /**
    * Display time to birthday
@@ -182,10 +181,10 @@ attCiJZz1Ly8Bs55FcCdHGEYUiGE8k2YIAjC/wC1S95Q3B+2+gAAAABJRU5ErkJggg==
       let unit = this.interval_units[i][0];
       let value = this.interval_units[i][1];
       let num = Math.floor(tmpSec/value);
-      if (p==precision && num==0){
+      if (p===precision && num===0){
         continue;
       }
-      else if (p == precision){
+      else if (p === precision){
         output=num+" "+unit;
         tmpSec-=num*value;
         p-=1;
@@ -195,7 +194,7 @@ attCiJZz1Ly8Bs55FcCdHGEYUiGE8k2YIAjC/wC1S95Q3B+2+gAAAABJRU5ErkJggg==
         tmpSec-=num*value;
         p-=1;
       }
-      if (p==0){
+      if (p===0){
         break;
       }
     }

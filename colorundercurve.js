@@ -7,8 +7,6 @@
 import Dygraph from "dygraphs";
 
 Dygraph.Plugins.ColorUnderCurve = (function() {
-  "use strict";
-
   /**
    * @constructor
    */
@@ -40,9 +38,6 @@ Dygraph.Plugins.ColorUnderCurve = (function() {
   };
   
   colorundercurve.prototype.didDrawChart = function(e){
-    let g=this.g;
-    let area = this.g.getArea();
-    let ctx = this.g.hidden_ctx_;
     this.drawAreaBorder();
     this.data_.forEach(row =>
       this.recolor(row["start"],row["end"],row["color"])
@@ -83,7 +78,6 @@ Dygraph.Plugins.ColorUnderCurve = (function() {
   
   colorundercurve.prototype.recolor = function(start_sec,end_sec, color){
     let g = this.g;
-    let canvas = g.hidden_;
     let ctx = g.hidden_ctx_;
     let scale = window.devicePixelRatio;
     let start = g.toDomXCoord( new Date(start_sec*1000) );

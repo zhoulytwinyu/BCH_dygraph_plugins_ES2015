@@ -7,7 +7,6 @@
 import Dygraph from "dygraphs";
 
 Dygraph.Plugins.Unzoom = (function() {
-  "use strict";
 
   /**
    * This unzoom plugin adds a unzoom button to a given div. The options

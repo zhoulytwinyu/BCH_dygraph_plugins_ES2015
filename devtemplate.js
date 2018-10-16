@@ -7,7 +7,6 @@
 import Dygraph from "dygraphs";
 
 Dygraph.Plugins.Devtemplate = (function() {
-  "use strict";
 
   /**
    * @constructor

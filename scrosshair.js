@@ -7,8 +7,6 @@
 import Dygraph from "dygraphs";
 
 Dygraph.Plugins.SCrosshair = (function() {
-  "use strict";
-
   /**
    * @constructor
    */
@@ -50,7 +48,6 @@ Dygraph.Plugins.SCrosshair = (function() {
     let ctx= this.ctx;
     let area = g.getArea();
     let x = g.toDomXCoord(datetime_obj)-area.x;
-    let scale = window.devicePixelRatio;
     ctx.beginPath();
     ctx.moveTo(x,0);
     ctx.lineTo(x,this.canvas.height);
@@ -59,7 +56,6 @@ Dygraph.Plugins.SCrosshair = (function() {
 
   scrosshair.prototype.mousemove = function(ev) {
     let g = this.g;
-    let ctx= this.ctx;
     let x = ev.clientX-this.graph_clientX;
     let x_dt = g.toDataXCoord(x);
     for (let p of scrosshair.synchronizer.getPeers(this)){
@@ -69,7 +65,6 @@ Dygraph.Plugins.SCrosshair = (function() {
   };
 
   scrosshair.prototype.mouseout = function(ev) {
-    let scale = window.devicePixelRatio;
     for (let p of scrosshair.synchronizer.getPeers(this)){
       p.clear();
     }

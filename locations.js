@@ -7,7 +7,6 @@
 import Dygraph from "dygraphs";
 
 Dygraph.Plugins.Locations = (function() {
-  "use strict";
 
   /**
    * Adds a location bar to the top of the graph and show data point
@@ -54,15 +53,12 @@ Dygraph.Plugins.Locations = (function() {
   };
 
   locations.prototype.select = function(e) {
-    let g = this.g;
-    let unix_sec = e.selectedX/1000;
-    let scale_x = g.canvas_.width/g.width_;
-    let scale_y = g.canvas_.height/g.height_;
+    let scale = window.devicePixelRatio;
     let domXCoord = e.selectedPoints[0].canvasx;
     this.floater_.style.left = domXCoord+"px";
     let canvasXCoord = domXCoord - this.canvas_position_.x;
     let ctxPicking = this.picking_canvas_.getContext("2d");
-    let id = this.ColorToId( ctxPicking.getImageData(canvasXCoord*scale_x,11*scale_y,1,1).data );
+    let id = this.ColorToId( ctxPicking.getImageData(canvasXCoord*scale,11*scale,1,1).data );
     if (id===null){
       this.floater_.innerHTML = "Location unknown.";
     }
@@ -117,8 +113,8 @@ Dygraph.Plugins.Locations = (function() {
     this.canvas_.addEventListener("dblclick",function(ev){
       let x = Math.round(ev.layerX,1);
       let y = Math.round(ev.layerY,1);
-      let pick_color = self.picking_canvas_.getContext("2d").
-                           getImageData(x,y,1,1).data;
+      let pick_color = self.picking_canvas_.getContext("2d")
+                          .getImageData(x,y,1,1).data;
       let id = self.ColorToId(pick_color);
       console.log([x,y,id]);
       if (id === null){
@@ -190,7 +186,6 @@ Dygraph.Plugins.Locations = (function() {
       let row=this.data_[i];
       let start = this.toCanvasXCoord( new Date(1000*row["start"]) );
       let end = this.toCanvasXCoord( row["end"] ? new Date(1000*row["end"]) : new Date());
-      let label = row["label"];
       let color = row["color"];
       ctx.fillStyle = color;
       ctx.fillRect(start,1,end-start,20);
@@ -203,7 +198,6 @@ Dygraph.Plugins.Locations = (function() {
       let row=this.data_[i];
       let start = this.toCanvasXCoord( new Date(1000*row["start"]) );
       let end = this.toCanvasXCoord( row["end"] ? new Date(1000*row["end"]) : new Date());
-      let label = new Date(1000*row["label"]);
       ctx.fillStyle = this.IdToColor(i);
       ctx.fillRect(start,1,end-start,20);
     }

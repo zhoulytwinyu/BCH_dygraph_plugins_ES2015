@@ -7,7 +7,6 @@
 import Dygraph from "dygraphs";
 
 Dygraph.Plugins.Ylimits = (function() {
-  "use strict";
 
   /**
    * Plot horizontal limits with labels sitting vertically centered between

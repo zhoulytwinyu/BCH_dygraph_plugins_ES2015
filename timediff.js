@@ -7,7 +7,6 @@
 import Dygraph from "dygraphs";
 
 Dygraph.Plugins.Timediff = (function() {
-  "use strict";
 
   /**
    * Creates interactive events in the graphs and shows time diff
@@ -58,7 +57,6 @@ Dygraph.Plugins.Timediff = (function() {
   };
 
   timediff.prototype.click = function(e) {
-    let g=e.dygraph;
     let ctxDraw = this.canvas_.getContext("2d");
     let ctxPicking = this.picking_canvas_.getContext("2d");
     let ctxDynamic = this.dynamic_canvas_.getContext("2d");
@@ -307,7 +305,6 @@ Dygraph.Plugins.Timediff = (function() {
         this.selected_data_time_===null) {
       return;
     }
-    let g = this.g;
     let dynamic_canvas = this.dynamic_canvas_;
     let selected_event_idx = this.selected_event_idx_;
     let eventTime = this.data_[selected_event_idx]["time"];
@@ -422,7 +419,7 @@ Dygraph.Plugins.Timediff = (function() {
     else if (lt === "solid")
       ctx.setLineDash([]);
     else
-      throw `${this.constructor.name}: Invalid line type ${lt}.`
+      throw new Error(`${this.constructor.name}: Invalid line type ${lt}.`);
   };
   
   timediff.prototype.interval_units = [ ["year",365*24*60*60],
@@ -445,10 +442,10 @@ Dygraph.Plugins.Timediff = (function() {
       let unit = this.interval_units[i][0];
       let value = this.interval_units[i][1];
       let num = Math.floor(tmpSec/value);
-      if (p==precision && num==0){
+      if (p===precision && num===0){
         continue;
       }
-      else if (p == precision){
+      else if (p === precision){
         output=num+" "+unit;
         tmpSec-=num*value;
         p-=1;
@@ -458,7 +455,7 @@ Dygraph.Plugins.Timediff = (function() {
         tmpSec-=num*value;
         p-=1;
       }
-      if (p==0){
+      if (p===0){
         break;
       }
     }
